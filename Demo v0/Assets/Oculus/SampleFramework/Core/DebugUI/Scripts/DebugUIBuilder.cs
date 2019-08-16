@@ -78,6 +78,8 @@ public class DebugUIBuilder : MonoBehaviour
 
   public LaserPointer.LaserBeamBehavior laserBeamBehavior;
 
+
+
   public void Awake()
   {
     Debug.Assert(instance == null);
@@ -284,7 +286,8 @@ public class DebugUIBuilder : MonoBehaviour
     t.onValueChanged.AddListener(delegate { onValueChanged(t); });
     return rt;
   }
-
+    
+    
   public RectTransform AddRadio(string label, string group, OnToggleValueChange handler, int targetCanvas = 0)
   {
     RectTransform rt = (RectTransform)GameObject.Instantiate(radioPrefab);
@@ -311,6 +314,8 @@ public class DebugUIBuilder : MonoBehaviour
     return rt;
   }
 
+
+
   public void ToggleLaserPointer(bool isOn)
   {
     if (lp)
@@ -325,4 +330,12 @@ public class DebugUIBuilder : MonoBehaviour
       }
     }
   }
+
+    private void Update()
+    {
+        print(this.enabled);
+        this.enabled = true;
+    }
+
+
 }
