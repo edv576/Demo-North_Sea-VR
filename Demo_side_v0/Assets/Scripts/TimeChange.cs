@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Valve.VR;
 
 public class TimeChange : MonoBehaviour {
 
@@ -15,16 +16,21 @@ public class TimeChange : MonoBehaviour {
     float xInitialProportion;
     Text dataTimeText;
     Text dataCoordinatesText;
-    GameObject userObject;
+    //GameObject userObject;
     int numberFish = 63;
-    
+
+    public SteamVR_ActionSet movementSet;
+    public SteamVR_Action_Boolean clickMove;
+    public SteamVR_Action_Vector2 clickAxis;
+    public SteamVR_Input_Sources handtype;
+
     // Use this for initialization
     void Start () {
 
         nActualProportion = 0;
         dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
         //dataCoordinatesText = GameObject.Find("Data Coordinates Text").GetComponent<Text>();
-        userObject = GameObject.Find("OVRPlayerController");
+        //userObject = GameObject.Find("OVRPlayerController");
         dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
         initialPlayerPosition = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y,
             playerObject.transform.position.z);
@@ -44,12 +50,38 @@ public class TimeChange : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (OVRInput.GetUp(OVRInput.Button.Three) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
+
+
+        
+        //if (OVRInput.GetUp(OVRInput.Button.Three) || Input.GetKeyDown(KeyCode.DownArrow))
+        if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
+            {
             
             if(nActualProportion > 0)
             {
+
                 nActualProportion--;
+                dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
+                playerObject.transform.position = initialPlayerPosition;
+                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualProportion],
+                    freshWater.transform.localScale.y, freshWater.transform.localScale.z);
+
+                StartCoroutine("WaitRespawn");
+
+                
+
+            }
+
+        }
+
+        //if (OVRInput.GetUp(OVRInput.Button.Four) || Input.GetKeyDown(KeyCode.UpArrow))
+        if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
+            {
+            if (nActualProportion < freshWaterProportions.Length - 1)
+            {
+
+
+                nActualProportion++;
                 dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
                 playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualProportion],
@@ -60,25 +92,8 @@ public class TimeChange : MonoBehaviour {
                 //fishSchool.GetComponent<SchoolController>()._childAmount = 63;
                 //fishSchool.GetComponent<SchoolController>().AutoRandomWaypointPosition();
 
-
             }
-
-        }
-
-        if (OVRInput.GetUp(OVRInput.Button.Four) || Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (nActualProportion < freshWaterProportions.Length - 1)
-            {
-                nActualProportion++;
-                dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
-                playerObject.transform.position = initialPlayerPosition;
-                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualProportion],
-                    freshWater.transform.localScale.y, freshWater.transform.localScale.z);
-
-                StartCoroutine("WaitRespawn");
-
-            }
-
+            
         }
 
         //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x, 1).ToString() + ", " +

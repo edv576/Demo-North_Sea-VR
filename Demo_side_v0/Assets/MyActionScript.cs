@@ -7,8 +7,8 @@ public class MyActionScript : MonoBehaviour
 {
 
     public SteamVR_ActionSet movementSet;
-    public SteamVR_Action_Boolean moveUser;
-    public SteamVR_Action_Vector2 moveUser2;
+    public SteamVR_Action_Boolean clickMove;
+    public SteamVR_Action_Vector2 clickAxis;
     public SteamVR_Input_Sources handtype;
     public GameObject sphere;
     private int counter = 0;
@@ -16,8 +16,8 @@ public class MyActionScript : MonoBehaviour
 
     private void Awake()
     {
-        moveUser = SteamVR_Actions.MovementSet.MoveUser;
-        moveUser2 = SteamVR_Actions.MovementSet.MoveUser2;
+        clickMove = SteamVR_Actions.MovementSet.ClickMove;
+        clickAxis = SteamVR_Actions.MovementSet.ClickAxis;
     }
 
     // Start is called before the first frame update
@@ -50,24 +50,34 @@ public class MyActionScript : MonoBehaviour
     void Update()
     {
 
-        if (moveUser.GetState(handtype))
+        if (clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
         {
-            counter++;
+            counter += 50;
             Debug.Log(counter);
             //Debug.Log()
 
         }
 
-        if(moveUser2.GetLastAxis(handtype).y > 0)
+        if (clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
         {
-            counter++;
+            counter += 5;
             Debug.Log(counter);
+            //Debug.Log()
 
         }
 
+        //if(moveUser2.GetLastAxis(handtype).y > 0)
+        //{
+        //    counter++;
+        //    Debug.Log(counter);
+
+        //}
+
+
+
         //Debug.Log(moveUser2.GetLastAxis(handtype).y);
 
-      
+
 
     }
 }

@@ -74,11 +74,11 @@
       "requirement": "optional"
     },
     {
-      "name": "/actions/MovementSet/in/MoveUser",
+      "name": "/actions/MovementSet/in/ClickMove",
       "type": "boolean"
     },
     {
-      "name": "/actions/MovementSet/in/MoveUser2",
+      "name": "/actions/MovementSet/in/ClickAxis",
       "type": "vector2"
     }
   ],
