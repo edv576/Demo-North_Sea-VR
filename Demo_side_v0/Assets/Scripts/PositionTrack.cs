@@ -20,6 +20,13 @@ public class PositionTrack : MonoBehaviour
     float mapSideLenghtHalf;
     float panelSideLengthHalf;
 
+    public Vector3 getPositionFromMap(Vector3 positionInMap)
+    {
+        return new Vector3(positionInMap.y * mapSideLenghtHalf/panelSideLengthHalf, player.transform.position.y, -positionInMap.x * mapSideLenghtHalf/panelSideLengthHalf);
+
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
