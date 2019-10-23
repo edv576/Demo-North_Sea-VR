@@ -245,6 +245,8 @@ public class TimeChange : MonoBehaviour {
 
         List<Dictionary<string, object>> data = CSVReader.Read("Clupea_harengus_WMR2");
 
+        Algorithms alg = new Algorithms();
+
         for (var i = 0; i < data.Count; i++)
         {
             //print("name " + data[i]["name"] + " " +
@@ -260,7 +262,7 @@ public class TimeChange : MonoBehaviour {
 
             Vector2 pos = new Vector2((float)x, (float)y);
 
-            if(IsInLimits(pos) && dateExtraction.Contains("-5-"))
+            if(alg.InAreaOfStudy_4Vertices(pos, p1, p2, p3, p4) && dateExtraction.Contains("2005-05-"))
             {
                 int p = 0;
 
