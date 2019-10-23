@@ -33,11 +33,13 @@ public class TimeChange : MonoBehaviour {
     public BoxCollider seaCollider = null;
     float maxX, minX, maxY, minY;
     float rotationAngle;
+    float rotationAngle2;
     float RWDiagonalDistance;
     float VRDiagonalDistance;
     Vector2 p1, p2, p3, p4;
     Vector2 Q, U, V;
     float a, b;
+    float realMagnitude;
     Point2D[] pointsMap;
     Vector2 upperRight;
     Vector2 downLeft;
@@ -162,17 +164,12 @@ public class TimeChange : MonoBehaviour {
 
         nActualProportion = 0;
         dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
-        //dataCoordinatesText = GameObject.Find("Data Coordinates Text").GetComponent<Text>();
-        //userObject = GameObject.Find("OVRPlayerController");
         dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
         initialPlayerPosition = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y,
             playerObject.transform.position.z);
         xInitialProportion = freshWater.transform.localScale.x;
         fishSchool.transform.position = fishPositions[nActualProportion];
         numberFish = fishSchool.GetComponent<SchoolController>()._childAmount;
-        //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x,2).ToString() + ", " +
-        //    System.Math.Round(userObject.transform.position.y, 2) + ", " +
-        //    System.Math.Round(userObject.transform.position.z, 2);
 
 
         p1 = new Vector2(3.92442f, 51.88204f);
@@ -187,6 +184,11 @@ public class TimeChange : MonoBehaviour {
         p4 = p2 + perpDirection * sideMagnitude;
 
         rotationAngle = Vector2.Angle(direction, Vector2.right);
+
+        Q = 0.5f * (p2 + p3);
+        realMagnitude = (Q-p2).magnitude;
+
+        rotationAngle2 = Vector2.Angle((p4 - p2).normalized, (Q - p2).normalized);
 
 
         maxX = -5000;
@@ -229,7 +231,7 @@ public class TimeChange : MonoBehaviour {
         downLeft = new Vector2(seaCollider.bounds.min.z, seaCollider.bounds.min.x);
         VRDiagonalDistance = (upperRight - downLeft).magnitude;
 
-        Q = 0.5f * (p1 + p4);
+        
         a = 0.5f * (p4 - p1).magnitude;
         b = 0.5f * (p3 - p2).magnitude;
 
@@ -240,6 +242,33 @@ public class TimeChange : MonoBehaviour {
         float ty = p1.y;
 
         print(Q.x);
+
+        List<Dictionary<string, object>> data = CSVReader.Read("Clupea_harengus_WMR2");
+
+        for (var i = 0; i < data.Count; i++)
+        {
+            //print("name " + data[i]["name"] + " " +
+            //       "age " + data[i]["age"] + " " +
+            //       "speed " + data[i]["speed"] + " " +
+            //       "desc " + data[i]["description"]);
+
+            double x = (double)data[i]["x"];
+            double y = (double)data[i]["y"];
+
+            int n = (int)data[i]["n"];
+            string dateExtraction = (string)data[i]["date"];
+
+            Vector2 pos = new Vector2((float)x, (float)y);
+
+            if(IsInLimits(pos) && dateExtraction.Contains("-5-"))
+            {
+                int p = 0;
+
+            }
+
+
+
+        }
 
         StartCoroutine("WaitRespawn");
 
@@ -312,9 +341,11 @@ public class TimeChange : MonoBehaviour {
         print(dir.x);
         print(dir.y);
 
-        dir = RotateVector(dir, rotationAngle);
+        dir = RotateVector(Vector2.right, rotationAngle2);
 
-        Vector2 newPosition = downLeft + dir * 162F;
+        Vector2 change = dir * realMagnitude * (VRDiagonalDistance / RWDiagonalDistance);
+
+        Vector2 newPosition = downLeft + change;
 
         fishSchool.GetComponent<SchoolController>()._childAmount = 0;
         fishSchool.GetComponent<SchoolController>().Respawn();

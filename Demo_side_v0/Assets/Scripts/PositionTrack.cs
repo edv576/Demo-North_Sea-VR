@@ -47,6 +47,12 @@ public class PositionTrack : MonoBehaviour
     }
 
 
+    private void Awake()
+    {
+
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
