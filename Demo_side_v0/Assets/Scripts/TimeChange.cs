@@ -12,10 +12,7 @@ struct Point2D
 };
 
 public class TimeChange : MonoBehaviour {
-
-
-
-    
+  
 
     public float[] freshWaterProportions;
     public Vector3[] fishPositions;
@@ -174,7 +171,7 @@ public class TimeChange : MonoBehaviour {
         initialPlayerPosition = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y,
             playerObject.transform.position.z);
         xInitialProportion = freshWater.transform.localScale.x;
-        fishSchool.transform.position = fishPositions[nActualYear];
+        //fishSchool.transform.position = fishPositions[nActualYear];
         numberFish = fishSchool.GetComponent<SchoolController>()._childAmount;
 
         listFishSchools = new List<GameObject>();
@@ -251,7 +248,10 @@ public class TimeChange : MonoBehaviour {
 
         print(Q.x);
 
-        List<Dictionary<string, object>> data = CSVReader.Read("Clupea_harengus_WMR2");
+
+
+
+        List<Dictionary<string, object>> dataFish = CSVReader.Read("Clupea_harengus_WMR2");
 
         Algorithms alg = new Algorithms();
 
@@ -263,17 +263,17 @@ public class TimeChange : MonoBehaviour {
             List<Vector2> listFishPos = new List<Vector2>();
             List<int> listFishNumberInPos = new List<int>();
 
-            for (int j = 0; j < data.Count; j++)
+            for (int j = 0; j < dataFish.Count; j++)
             {
 
-                double x = double.Parse(data[j]["x"].ToString());
-                double y = double.Parse(data[j]["y"].ToString());
+                double x = double.Parse(dataFish[j]["x"].ToString());
+                double y = double.Parse(dataFish[j]["y"].ToString());
 
 
 
 
-                int n = (int)data[j]["n"];
-                string dateExtraction = (string)data[j]["date"];
+                int n = (int)dataFish[j]["n"];
+                string dateExtraction = (string)dataFish[j]["date"];
 
                 Vector2 pos = new Vector2((float)x, (float)y);
 
@@ -328,6 +328,28 @@ public class TimeChange : MonoBehaviour {
 
         StartCoroutine("WaitRespawn");
 
+
+    }
+
+    Vector2 ConvertVRtoReal(Vector2 point)
+    {
+
+        Vector2 realDir;
+        Vector2 virtualDir;
+        float rotationAngle;
+        Vector2 change;
+        Vector2 newPosition;
+        //Vector2 VRPos;
+
+        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
+
+        virtualDir = (point - downLeft);
+        rotationAngle = Vector2.Angle(Vector2.right, virtualDir.normalized);
+        realDir = RotateVector((p4-p2).normalized, rotationAngle);
+        change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
+        newPosition = p2 + change;
+
+        return newPosition;
 
     }
 	
@@ -399,32 +421,6 @@ public class TimeChange : MonoBehaviour {
 
 
 
-        //for (int i = 0; i < listFishSchools.Count; i++)
-        //{
-        //    int h = listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount;
-
-        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().RemoveFish(h);
-
-        //    for (int j = 0; j < numberFish; j++)
-        //    {
-
-        //        yield return new WaitForSeconds(.001f);
-        //    }
-        //    Destroy(listFishSchools.ElementAt<GameObject>(i));
-
-        //    h = listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount;
-        //}
-
-        //listFishSchools = new List<GameObject>();
-
-        //for (int i = 0; i < numberFish; i++)
-        //{
-
-        //    yield return new WaitForSeconds(.001f);
-        //}
-
-        //int p = 0;
-
         for (int i = 0; i < listFishSchools.Count; i++)
         {
 
@@ -463,8 +459,6 @@ public class TimeChange : MonoBehaviour {
                     yield return new WaitForSeconds(.001f);
                 }
 
-                //listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i); ;
-                //listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
 
             }
 
@@ -474,57 +468,7 @@ public class TimeChange : MonoBehaviour {
 
         }
 
-        //for(int i = 0; i < listFishSchools.Count; i++)
-        //{
-        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
-        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
 
-        //    for (int j = 0; j < numberFish; j++)
-        //    {
-
-        //        yield return new WaitForSeconds(.001f);
-        //    }
-
-        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i); ;
-        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
-        //}
-
-        
-
-        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>()._childAmount = 0;
-        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>().Respawn();
-
-        //for (int i = 0; i < numberFish; i++)
-        //{
-
-        //    yield return new WaitForSeconds(.001f);
-        //}
-
-        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>()._childAmount = 20;
-        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>().Respawn();
-
-        //dir = (Q - p2).normalized;
-
-        //print(dir.x);
-        //print(dir.y);
-
-        //dir = RotateVector(Vector2.right, rotationAngle2);
-
-        //Vector2 change = dir * realMagnitude * (VRDiagonalDistance / RWDiagonalDistance);
-
-        //Vector2 newPosition = downLeft + change;
-
-        //fishSchool.GetComponent<SchoolController>()._childAmount = 0;
-        //fishSchool.GetComponent<SchoolController>().Respawn();
-        ////fishSchool.transform.position = fishPositions[nActualProportion];
-        //fishSchool.transform.position = new Vector3(newPosition.y, fishSchool.transform.position.y, newPosition.x);
-        //for (int i = 0; i < numberFish; i++)
-        //{
-
-        //    yield return new WaitForSeconds(.001f);
-        //}
-        //fishSchool.GetComponent<SchoolController>()._childAmount = numberFish;
-        //fishSchool.GetComponent<SchoolController>().Respawn();
 
     }
 }
