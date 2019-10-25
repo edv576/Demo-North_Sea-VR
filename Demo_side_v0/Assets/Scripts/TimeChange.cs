@@ -19,27 +19,33 @@ public class TimeChange : MonoBehaviour {
 
     public float[] freshWaterProportions;
     public Vector3[] fishPositions;
-    int nActualProportion;
+    int nActualYear;
     public GameObject freshWater;
     public GameObject playerObject;
     public GameObject fishSchool;
+    List<GameObject> listFishSchools;
     Vector3 initialPlayerPosition;
     float xInitialProportion;
     Text dataTimeText;
     Text dataCoordinatesText;
     //GameObject userObject;
     int numberFish = 63;
+    public int yearSamples = 5;
+    public int startYear = 2005;
+    public int yearStep = 2;
+    List<Vector2>[] fishPositionsXYear;
+    List<int>[] fishNumberXYearInPos;
+    float yPos;
+    Vector3 vanishPos;
 
     public BoxCollider seaCollider = null;
     float maxX, minX, maxY, minY;
-    float rotationAngle;
     float rotationAngle2;
     float RWDiagonalDistance;
     float VRDiagonalDistance;
     Vector2 p1, p2, p3, p4;
     Vector2 Q, U, V;
     float a, b;
-    float realMagnitude;
     Point2D[] pointsMap;
     Vector2 upperRight;
     Vector2 downLeft;
@@ -162,14 +168,16 @@ public class TimeChange : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        nActualProportion = 0;
+        nActualYear = 0;
         dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
-        dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
+        dataTimeText.text = "Year: " + (nActualYear*2 + 2005).ToString();
         initialPlayerPosition = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y,
             playerObject.transform.position.z);
         xInitialProportion = freshWater.transform.localScale.x;
-        fishSchool.transform.position = fishPositions[nActualProportion];
+        fishSchool.transform.position = fishPositions[nActualYear];
         numberFish = fishSchool.GetComponent<SchoolController>()._childAmount;
+
+        listFishSchools = new List<GameObject>();
 
 
         p1 = new Vector2(3.92442f, 51.88204f);
@@ -183,10 +191,10 @@ public class TimeChange : MonoBehaviour {
         p3 = p1 + perpDirection * sideMagnitude;
         p4 = p2 + perpDirection * sideMagnitude;
 
-        rotationAngle = Vector2.Angle(direction, Vector2.right);
+
 
         Q = 0.5f * (p2 + p3);
-        realMagnitude = (Q-p2).magnitude;
+
 
         rotationAngle2 = Vector2.Angle((p4 - p2).normalized, (Q - p2).normalized);
 
@@ -247,30 +255,76 @@ public class TimeChange : MonoBehaviour {
 
         Algorithms alg = new Algorithms();
 
-        for (var i = 0; i < data.Count; i++)
+        fishPositionsXYear = new List<Vector2>[yearSamples];
+        fishNumberXYearInPos = new List<int>[yearSamples];
+
+        for(int i = 0; i < yearSamples; i++)
         {
-            //print("name " + data[i]["name"] + " " +
-            //       "age " + data[i]["age"] + " " +
-            //       "speed " + data[i]["speed"] + " " +
-            //       "desc " + data[i]["description"]);
+            List<Vector2> listFishPos = new List<Vector2>();
+            List<int> listFishNumberInPos = new List<int>();
 
-            double x = (double)data[i]["x"];
-            double y = (double)data[i]["y"];
-
-            int n = (int)data[i]["n"];
-            string dateExtraction = (string)data[i]["date"];
-
-            Vector2 pos = new Vector2((float)x, (float)y);
-
-            if(alg.InAreaOfStudy_4Vertices(pos, p1, p2, p3, p4) && dateExtraction.Contains("2005-05-"))
+            for (int j = 0; j < data.Count; j++)
             {
-                int p = 0;
 
+                double x = double.Parse(data[j]["x"].ToString());
+                double y = double.Parse(data[j]["y"].ToString());
+
+
+
+
+                int n = (int)data[j]["n"];
+                string dateExtraction = (string)data[j]["date"];
+
+                Vector2 pos = new Vector2((float)x, (float)y);
+
+                int year = startYear + i * yearStep;
+
+                string yearMonth = year.ToString() + "-05-";
+
+                if (alg.InAreaOfStudy_4Vertices(pos, p1, p2, p3, p4) && dateExtraction.Contains(yearMonth))
+                {
+                    listFishPos.Add(pos);
+                    listFishNumberInPos.Add(n);
+                }
+
+ 
             }
+
+            int p = 0;
+
+            fishPositionsXYear[i] = listFishPos;
+            fishNumberXYearInPos[i] = listFishNumberInPos;
 
 
 
         }
+
+
+
+        int max = -1000;
+
+        for(int i = 0; i < fishPositionsXYear.Length; i++)
+        {
+            if(fishPositionsXYear[i].Count > max)
+            {
+                max = fishPositionsXYear[i].Count;
+            }
+
+        }
+
+        listFishSchools = new List<GameObject>();
+
+        for(int i = 0; i < max; i++)
+        {
+            GameObject cloneFishSchool = Instantiate(fishSchool, fishSchool.transform.position, fishSchool.transform.rotation) as GameObject;
+            listFishSchools.Add(cloneFishSchool);
+
+        }
+
+        yPos = fishSchool.transform.position.y;
+
+        vanishPos = new Vector3(0.0f, -300.0f, 0.0f);
+       
 
         StartCoroutine("WaitRespawn");
 
@@ -287,13 +341,13 @@ public class TimeChange : MonoBehaviour {
         if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
             {
             
-            if(nActualProportion > 0)
+            if(nActualYear > 0)
             {
 
-                nActualProportion--;
-                dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
+                nActualYear--;
+                dataTimeText.text = "Year: " + (nActualYear*2 + startYear).ToString();
                 playerObject.transform.position = initialPlayerPosition;
-                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualProportion],
+                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
                 StartCoroutine("WaitRespawn");
@@ -307,14 +361,14 @@ public class TimeChange : MonoBehaviour {
         //if (OVRInput.GetUp(OVRInput.Button.Four) || Input.GetKeyDown(KeyCode.UpArrow))
         if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
             {
-            if (nActualProportion < freshWaterProportions.Length - 1)
+            if (nActualYear < yearSamples - 1)
             {
 
 
-                nActualProportion++;
-                dataTimeText.text = "Year: " + (nActualProportion + 2010).ToString();
+                nActualYear++;
+                dataTimeText.text = "Year: " + (nActualYear*2 + startYear).ToString();
                 playerObject.transform.position = initialPlayerPosition;
-                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualProportion],
+                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
                 StartCoroutine("WaitRespawn");
@@ -337,29 +391,140 @@ public class TimeChange : MonoBehaviour {
 
     IEnumerator WaitRespawn()
     {
+        Vector2 realDir;
+        Vector2 virtualDir;
+        float rotationAngle;
+        Vector2 change;
+        Vector2 newPosition;
 
-        Vector2 dir = (Q - p2).normalized;
 
-        print(dir.x);
-        print(dir.y);
 
-        dir = RotateVector(Vector2.right, rotationAngle2);
+        //for (int i = 0; i < listFishSchools.Count; i++)
+        //{
+        //    int h = listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount;
 
-        Vector2 change = dir * realMagnitude * (VRDiagonalDistance / RWDiagonalDistance);
+        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().RemoveFish(h);
 
-        Vector2 newPosition = downLeft + change;
+        //    for (int j = 0; j < numberFish; j++)
+        //    {
 
-        fishSchool.GetComponent<SchoolController>()._childAmount = 0;
-        fishSchool.GetComponent<SchoolController>().Respawn();
-        //fishSchool.transform.position = fishPositions[nActualProportion];
-        fishSchool.transform.position = new Vector3(newPosition.y, fishSchool.transform.position.y, newPosition.x);
-        for (int i = 0; i < numberFish; i++)
+        //        yield return new WaitForSeconds(.001f);
+        //    }
+        //    Destroy(listFishSchools.ElementAt<GameObject>(i));
+
+        //    h = listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount;
+        //}
+
+        //listFishSchools = new List<GameObject>();
+
+        //for (int i = 0; i < numberFish; i++)
+        //{
+
+        //    yield return new WaitForSeconds(.001f);
+        //}
+
+        //int p = 0;
+
+        for (int i = 0; i < listFishSchools.Count; i++)
         {
 
-            yield return new WaitForSeconds(.001f);
+            if(i< fishPositionsXYear[nActualYear].Count)
+            {
+                Vector2 pos = fishPositionsXYear[nActualYear].ElementAt<Vector2>(i);
+                realDir = (pos - p2);
+                rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
+                virtualDir = RotateVector(Vector2.right, rotationAngle);
+                change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
+                newPosition = downLeft + change;
+                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
+                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
+
+                listFishSchools.ElementAt<GameObject>(i).transform.position = new Vector3(newPosition.y, fishSchool.transform.position.y, newPosition.x);
+
+                for (int j = 0; j < numberFish; j++)
+                {
+
+                    yield return new WaitForSeconds(.001f);
+                }
+
+                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i); ;
+                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
+            }
+            else
+            {
+                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
+                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
+
+                listFishSchools.ElementAt<GameObject>(i).transform.position = vanishPos;
+
+                for (int j = 0; j < numberFish; j++)
+                {
+
+                    yield return new WaitForSeconds(.001f);
+                }
+
+                //listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i); ;
+                //listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
+
+            }
+
+            
+
+            
+
         }
-        fishSchool.GetComponent<SchoolController>()._childAmount = numberFish;
-        fishSchool.GetComponent<SchoolController>().Respawn();
+
+        //for(int i = 0; i < listFishSchools.Count; i++)
+        //{
+        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
+        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
+
+        //    for (int j = 0; j < numberFish; j++)
+        //    {
+
+        //        yield return new WaitForSeconds(.001f);
+        //    }
+
+        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i); ;
+        //    listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
+        //}
+
+        
+
+        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>()._childAmount = 0;
+        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>().Respawn();
+
+        //for (int i = 0; i < numberFish; i++)
+        //{
+
+        //    yield return new WaitForSeconds(.001f);
+        //}
+
+        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>()._childAmount = 20;
+        //listFishSchools.ElementAt<GameObject>(3).GetComponent<SchoolController>().Respawn();
+
+        //dir = (Q - p2).normalized;
+
+        //print(dir.x);
+        //print(dir.y);
+
+        //dir = RotateVector(Vector2.right, rotationAngle2);
+
+        //Vector2 change = dir * realMagnitude * (VRDiagonalDistance / RWDiagonalDistance);
+
+        //Vector2 newPosition = downLeft + change;
+
+        //fishSchool.GetComponent<SchoolController>()._childAmount = 0;
+        //fishSchool.GetComponent<SchoolController>().Respawn();
+        ////fishSchool.transform.position = fishPositions[nActualProportion];
+        //fishSchool.transform.position = new Vector3(newPosition.y, fishSchool.transform.position.y, newPosition.x);
+        //for (int i = 0; i < numberFish; i++)
+        //{
+
+        //    yield return new WaitForSeconds(.001f);
+        //}
+        //fishSchool.GetComponent<SchoolController>()._childAmount = numberFish;
+        //fishSchool.GetComponent<SchoolController>().Respawn();
 
     }
 }

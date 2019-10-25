@@ -7,10 +7,10 @@ using UnityEngine;
 
 
 public class SchoolChild:MonoBehaviour{
-	[HideInInspector]
+	//[HideInInspector]
 	public SchoolController _spawner;
 	Vector3 _wayPoint;
-	[HideInInspector]
+	//[HideInInspector]
 	public float _speed= 10.0f;				//Fish Speed
 	float _stuckCounter;			//prevents looping around a waypoint
 	float _damping;					//Turn speed
