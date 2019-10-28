@@ -11,17 +11,29 @@ struct Point2D
     public float y;
 };
 
+struct SalinityPoint
+{
+    public float x;
+    public float y;
+    public float salinity;
+    public int waterLayer;
+    public int year;
+
+};
+
 public class TimeChange : MonoBehaviour {
   
 
     public float[] freshWaterProportions;
     public Vector3[] fishPositions;
-    int nActualYear;
+    int nActualYear;   
     public GameObject freshWater;
+    public Renderer waterRenderer;
     public GameObject playerObject;
     public GameObject fishSchool;
     List<GameObject> listFishSchools;
     Vector3 initialPlayerPosition;
+    Vector3 lastPlayerPosition;
     float xInitialProportion;
     Text dataTimeText;
     Text dataCoordinatesText;
@@ -32,6 +44,7 @@ public class TimeChange : MonoBehaviour {
     public int yearStep = 2;
     List<Vector2>[] fishPositionsXYear;
     List<int>[] fishNumberXYearInPos;
+    List<SalinityPoint>[] salinityPointsXYear;
     float yPos;
     Vector3 vanishPos;
 
@@ -46,6 +59,8 @@ public class TimeChange : MonoBehaviour {
     Point2D[] pointsMap;
     Vector2 upperRight;
     Vector2 downLeft;
+    public int numberWaterLayers;
+    public float deepestLevel;
 
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
@@ -170,6 +185,8 @@ public class TimeChange : MonoBehaviour {
         dataTimeText.text = "Year: " + (nActualYear*2 + 2005).ToString();
         initialPlayerPosition = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y,
             playerObject.transform.position.z);
+
+        lastPlayerPosition = playerObject.transform.position;
         xInitialProportion = freshWater.transform.localScale.x;
         //fishSchool.transform.position = fishPositions[nActualYear];
         numberFish = fishSchool.GetComponent<SchoolController>()._childAmount;
@@ -247,6 +264,46 @@ public class TimeChange : MonoBehaviour {
         float ty = p1.y;
 
         print(Q.x);
+
+        List<Dictionary<string, object>> dataSalinity = CSVReader.Read("Data_Salinity_2005_v1");
+
+
+        SalinityPoint[] salinityPoints = new SalinityPoint[dataSalinity.Count];
+
+        for(int i = 0; i < dataSalinity.Count; i++)
+        {
+            float n;
+
+            if(float.TryParse(dataSalinity[i]["lon"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n))
+            {
+                salinityPoints[i].x = float.Parse(dataSalinity[i]["lon"].ToString());
+                salinityPoints[i].y = float.Parse(dataSalinity[i]["lat"].ToString());
+                salinityPoints[i].salinity = float.Parse(dataSalinity[i]["var"].ToString());
+                salinityPoints[i].waterLayer = int.Parse(dataSalinity[i]["level"].ToString());
+                salinityPoints[i].year = int.Parse(dataSalinity[i]["year"].ToString());
+
+            }
+                       
+            //print(i);
+        }
+
+        salinityPointsXYear = new List<SalinityPoint>[yearSamples];
+
+
+
+        for (int i = 0; i < yearSamples; i++)
+        {
+            List<SalinityPoint> dummySalinityPoints = new List<SalinityPoint>();
+
+            for(int j = 0;j< salinityPoints.Length; j++)
+            {
+                if(i * 2 + startYear == salinityPoints[j].year)
+                {
+                    dummySalinityPoints.Add(salinityPoints[j]);
+                }
+            }
+            salinityPointsXYear[i] = dummySalinityPoints;
+        }
 
 
 
@@ -338,7 +395,7 @@ public class TimeChange : MonoBehaviour {
         Vector2 virtualDir;
         float rotationAngle;
         Vector2 change;
-        Vector2 newPosition;
+        Vector2 realPosition;
         //Vector2 VRPos;
 
         //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
@@ -347,15 +404,74 @@ public class TimeChange : MonoBehaviour {
         rotationAngle = Vector2.Angle(Vector2.right, virtualDir.normalized);
         realDir = RotateVector((p4-p2).normalized, rotationAngle);
         change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
-        newPosition = p2 + change;
+        realPosition = p2 + change;
 
-        return newPosition;
+        return realPosition;
+
+    }
+
+    int GetWaterLayer(float actualDepth)
+    {
+        if(actualDepth <= upperRight.y && actualDepth >= deepestLevel)
+        {
+            float depthChunk = (upperRight.y - deepestLevel) / 10;
+
+            int waterLayer = 1;
+            for (int i = 0; i < numberWaterLayers; i++)
+            {
+                if (actualDepth >= upperRight.y - depthChunk * waterLayer)
+                {
+
+                    break;
+                }
+                waterLayer++;
+
+            }
+
+            return waterLayer;
+        }
+        else
+        {
+
+            return -1;
+        }
+
+
 
     }
 	
 	// Update is called once per frame
 	void Update () {
 
+        //Limits fresh water - seawater
+        //< 0.5 - fresh water / 0.5 - 30 brackish water (aka gradient) / > 30 - Seawater
+
+        int waterLayer = GetWaterLayer(playerObject.transform.position.y);
+
+        if (playerObject.transform.position != lastPlayerPosition && waterLayer != -1)
+        {
+            
+            for(int i = 0; i < salinityPointsXYear[nActualYear].Count; i++)
+            {
+                if(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).waterLayer == waterLayer)
+                {
+                    Vector2 VRPlayerPosition = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
+                    Vector2 RealPlayerPosition = ConvertVRtoReal(VRPlayerPosition);
+
+                    if ((RealPlayerPosition - new Vector2(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).x, salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).y)).magnitude < 0.01)
+                    {
+
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+        lastPlayerPosition = playerObject.transform.position;
 
 
         
