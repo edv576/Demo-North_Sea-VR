@@ -21,6 +21,16 @@ struct SalinityPoint
 
 };
 
+struct WaterSubdivision
+{
+    public float x0;
+    public float xf;
+    public float gradientY0;
+    public float grafientYf;
+    public float thereIsData;
+    public float layer;
+};
+
 public class TimeChange : MonoBehaviour {
   
 
@@ -45,6 +55,8 @@ public class TimeChange : MonoBehaviour {
     List<Vector2>[] fishPositionsXYear;
     List<int>[] fishNumberXYearInPos;
     List<SalinityPoint>[] salinityPointsXYear;
+    List<int>[] salinityIndexesXYearMixDLimit;
+    List<int>[] salinityIndexesXYearMixUlimit;   
     float yPos;
     Vector3 vanishPos;
 
@@ -61,6 +73,8 @@ public class TimeChange : MonoBehaviour {
     Vector2 downLeft;
     public int numberWaterLayers;
     public float deepestLevel;
+    public int subdivisions;
+    WaterSubdivision[,] allWaterSubdivisionsXYear;
 
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
@@ -177,6 +191,23 @@ public class TimeChange : MonoBehaviour {
 
     }
 
+    void CreateAllWaterSubdivisions()
+    {
+        allWaterSubdivisionsXYear = new WaterSubdivision[subdivisions,yearSamples];
+        float intervalSubdivision;
+
+        intervalSubdivision = (seaCollider.bounds.max.z - seaCollider.bounds.max.z)/subdivisions;
+
+        for (int i = 0; i < yearSamples; i++)
+        {
+            for(int j = 0; j < subdivisions; j++)
+            {
+
+            }
+        }
+
+    }
+
     // Use this for initialization
     void Start () {
 
@@ -265,6 +296,13 @@ public class TimeChange : MonoBehaviour {
 
         print(Q.x);
 
+        SalinityPreCalculations preCalculations = new SalinityPreCalculations();
+
+        salinityIndexesXYearMixDLimit = preCalculations.Load(1);
+        salinityIndexesXYearMixUlimit = preCalculations.Load(2);
+
+
+
         List<Dictionary<string, object>> dataSalinity = CSVReader.Read("Data_Salinity_2005_v1");
 
 
@@ -294,6 +332,8 @@ public class TimeChange : MonoBehaviour {
         for (int i = 0; i < yearSamples; i++)
         {
             List<SalinityPoint> dummySalinityPoints = new List<SalinityPoint>();
+
+            
 
             for(int j = 0;j< salinityPoints.Length; j++)
             {
@@ -407,6 +447,28 @@ public class TimeChange : MonoBehaviour {
         realPosition = p2 + change;
 
         return realPosition;
+
+    }
+
+    Vector2 ConvertRealtoVR(Vector2 point)
+    {
+
+        Vector2 realDir;
+        Vector2 virtualDir;
+        float rotationAngle;
+        Vector2 change;
+        Vector2 VRPosition;
+        //Vector2 VRPos;
+
+        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
+
+        realDir = (point - p2);
+        rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
+        virtualDir = RotateVector(Vector2.right, rotationAngle);
+        change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
+        VRPosition = downLeft + change;
+
+        return VRPosition;
 
     }
 

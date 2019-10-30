@@ -26,6 +26,7 @@ public class CSVReader
     {
         var list = new List<Dictionary<string, object>>();
         TextAsset data = Resources.Load(file) as TextAsset;
+        
 
         var lines = Regex.Split(data.text, LINE_SPLIT_RE);
 
