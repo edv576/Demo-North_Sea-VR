@@ -206,7 +206,7 @@ public class TimeChange : MonoBehaviour {
         //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
 
         virtualDir = (point - downLeft);
-        rotationAngle = Vector2.Angle(Vector2.right, virtualDir.normalized);
+        rotationAngle = Vector2.Angle(Vector2.down, virtualDir.normalized);
         realDir = RotateVector((p4 - p2).normalized, rotationAngle);
         change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
         realPosition = p2 + change;
@@ -229,7 +229,7 @@ public class TimeChange : MonoBehaviour {
 
         realDir = (point - p2);
         rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
-        virtualDir = RotateVector(Vector2.right, rotationAngle);
+        virtualDir = RotateVector(Vector2.down, rotationAngle);
         change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
         VRPosition = downLeft + change;
 
@@ -239,7 +239,7 @@ public class TimeChange : MonoBehaviour {
 
     bool IsInSubdivision(WaterSubdivision subdivision, Vector2 point)
     {
-        if (point.x >= subdivision.x0 && point.x < subdivision.xf)
+        if (point.y <= subdivision.x0 && point.y > subdivision.xf)
         {
             return true;
         }
@@ -269,8 +269,8 @@ public class TimeChange : MonoBehaviour {
                 {
                     WaterSubdivision startWaterSubdivision = new WaterSubdivision();
                     startWaterSubdivision.thereIsData = false;
-                    startWaterSubdivision.x0 = downLeft.x - k * intervalSubdivision;
-                    startWaterSubdivision.xf = downLeft.x - (k + 1) * intervalSubdivision;
+                    startWaterSubdivision.x0 = downLeft.y - k * intervalSubdivision;
+                    startWaterSubdivision.xf = downLeft.y - (k + 1) * intervalSubdivision;
                     startWaterSubdivision.gradientY0 = 10000;
                     startWaterSubdivision.gradientYf = 10000;
                     waterSubdivisionsXLayer[j, k] = startWaterSubdivision;
@@ -299,7 +299,7 @@ public class TimeChange : MonoBehaviour {
                     {
                         if(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].waterLayer - 1 == k && waterSubdivisionsXLayer[k,l].gradientY0 == 10000 && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2,p3,p4))
                         {
-                            waterSubdivisionsXLayer[k, l].gradientY0 = VRPoint.y;
+                            waterSubdivisionsXLayer[k, l].gradientY0 = VRPoint.x;
                             actualCount++;
                             break;
                         }
@@ -328,7 +328,7 @@ public class TimeChange : MonoBehaviour {
                     {
                         if (salinityPoints[salinityIndexesXYearMixUlimit[i][j]].waterLayer - 1 == k && waterSubdivisionsXLayer[k, l].gradientYf == 10000 && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2, p3, p4))
                         {
-                            waterSubdivisionsXLayer[k, l].gradientYf = VRPoint.y;
+                            waterSubdivisionsXLayer[k, l].gradientYf = VRPoint.x;
                             actualCount++;
                             break;
                         }
@@ -441,8 +441,8 @@ public class TimeChange : MonoBehaviour {
 
         RWDiagonalDistance = (p3 - p2).magnitude;
 
-        upperRight = new Vector2(seaCollider.bounds.max.z, seaCollider.bounds.max.x);
-        downLeft = new Vector2(seaCollider.bounds.min.z, seaCollider.bounds.min.x);
+        upperRight = new Vector2(seaCollider.bounds.max.x, seaCollider.bounds.max.x);
+        downLeft = new Vector2(seaCollider.bounds.min.x, seaCollider.bounds.max.z);
         VRDiagonalDistance = (upperRight - downLeft).magnitude;
 
         
@@ -726,10 +726,10 @@ public class TimeChange : MonoBehaviour {
             if(i< fishPositionsXYear[nActualYear].Count)
             {
                 Vector2 pos = fishPositionsXYear[nActualYear].ElementAt<Vector2>(i);
-                realDir = (pos - p2);
-                rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
-                virtualDir = RotateVector(Vector2.right, rotationAngle);
-                change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
+                //realDir = (pos - p2);
+                //rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
+                //virtualDir = RotateVector(Vector2.right, rotationAngle);
+                //change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
                 //newPosition = downLeft + change;
 
                 newPosition = ConvertRealtoVR(pos);
