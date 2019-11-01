@@ -26,8 +26,8 @@ struct WaterSubdivision
     public float x0;
     public float xf;
     public float gradientY0;
-    public float grafientYf;
-    public float thereIsData;
+    public float gradientYf;
+    public bool thereIsData;
     public float layer;
 };
 
@@ -56,7 +56,8 @@ public class TimeChange : MonoBehaviour {
     List<int>[] fishNumberXYearInPos;
     List<SalinityPoint>[] salinityPointsXYear;
     List<int>[] salinityIndexesXYearMixDLimit;
-    List<int>[] salinityIndexesXYearMixUlimit;   
+    List<int>[] salinityIndexesXYearMixUlimit;
+    SalinityPoint[] salinityPoints;
     float yPos;
     Vector3 vanishPos;
 
@@ -74,7 +75,8 @@ public class TimeChange : MonoBehaviour {
     public int numberWaterLayers;
     public float deepestLevel;
     public int subdivisions;
-    WaterSubdivision[,] allWaterSubdivisionsXYear;
+    List<WaterSubdivision[,]> listWaterSubdivisionsXYear;
+    
 
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
@@ -191,19 +193,178 @@ public class TimeChange : MonoBehaviour {
 
     }
 
+    Vector2 ConvertVRtoReal(Vector2 point)
+    {
+
+        Vector2 realDir;
+        Vector2 virtualDir;
+        float rotationAngle;
+        Vector2 change;
+        Vector2 realPosition;
+        //Vector2 VRPos;
+
+        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
+
+        virtualDir = (point - downLeft);
+        rotationAngle = Vector2.Angle(Vector2.right, virtualDir.normalized);
+        realDir = RotateVector((p4 - p2).normalized, rotationAngle);
+        change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
+        realPosition = p2 + change;
+
+        return realPosition;
+
+    }
+
+    Vector2 ConvertRealtoVR(Vector2 point)
+    {
+
+        Vector2 realDir;
+        Vector2 virtualDir;
+        float rotationAngle;
+        Vector2 change;
+        Vector2 VRPosition;
+        //Vector2 VRPos;
+
+        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
+
+        realDir = (point - p2);
+        rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
+        virtualDir = RotateVector(Vector2.right, rotationAngle);
+        change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
+        VRPosition = downLeft + change;
+
+        return VRPosition;
+
+    }
+
+    bool IsInSubdivision(WaterSubdivision subdivision, Vector2 point)
+    {
+        if (point.x >= subdivision.x0 && point.x < subdivision.xf)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
     void CreateAllWaterSubdivisions()
     {
-        allWaterSubdivisionsXYear = new WaterSubdivision[subdivisions,yearSamples];
+        listWaterSubdivisionsXYear = new List<WaterSubdivision[,]>();
         float intervalSubdivision;
 
-        intervalSubdivision = (seaCollider.bounds.max.z - seaCollider.bounds.max.z)/subdivisions;
+        intervalSubdivision = Mathf.Abs(seaCollider.bounds.max.z - seaCollider.bounds.min.z)/subdivisions;
+
+        
 
         for (int i = 0; i < yearSamples; i++)
         {
-            for(int j = 0; j < subdivisions; j++)
+            WaterSubdivision[,] waterSubdivisionsXLayer = new WaterSubdivision[numberWaterLayers, subdivisions];
+
+            for(int j = 0; j < numberWaterLayers; j++)
             {
+                for(int k = 0; k < subdivisions; k++)
+                {
+                    WaterSubdivision startWaterSubdivision = new WaterSubdivision();
+                    startWaterSubdivision.thereIsData = false;
+                    startWaterSubdivision.x0 = downLeft.x - k * intervalSubdivision;
+                    startWaterSubdivision.xf = downLeft.x - (k + 1) * intervalSubdivision;
+                    startWaterSubdivision.gradientY0 = 10000;
+                    startWaterSubdivision.gradientYf = 10000;
+                    waterSubdivisionsXLayer[j, k] = startWaterSubdivision;
+                }
+            }
+
+            Algorithms alg = new Algorithms();
+            int matrixLimit = numberWaterLayers * subdivisions;
+            int actualCount = 0;
+
+            for(int j = 0; j < salinityIndexesXYearMixDLimit[i].Count; j++)
+            {
+                for(int k = 0; k < numberWaterLayers; k++)
+                {
+                    Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].x, salinityPoints[salinityIndexesXYearMixDLimit[i][j]].y));
+                    //print(j);
+                    //print(k);
+
+                    //if(k==9 && j == 1016)
+                    //{
+
+                    //    int h = 0;
+                    //}
+
+                    for(int l = 0; l < subdivisions; l++)
+                    {
+                        if(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].waterLayer - 1 == k && waterSubdivisionsXLayer[k,l].gradientY0 == 10000 && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2,p3,p4))
+                        {
+                            waterSubdivisionsXLayer[k, l].gradientY0 = VRPoint.y;
+                            actualCount++;
+                            break;
+                        }
+
+                    }
+
+
+
+                }
+                if(actualCount == matrixLimit)
+                {
+                    break;
+                }
 
             }
+
+            actualCount = 0;
+
+            for (int j = 0; j < salinityIndexesXYearMixUlimit[i].Count; j++)
+            {
+                for (int k = 0; k < numberWaterLayers; k++)
+                {
+                    Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[i][j]].x, salinityPoints[salinityIndexesXYearMixUlimit[i][j]].y));
+
+                    for (int l = 0; l < subdivisions; l++)
+                    {
+                        if (salinityPoints[salinityIndexesXYearMixUlimit[i][j]].waterLayer - 1 == k && waterSubdivisionsXLayer[k, l].gradientYf == 10000 && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2, p3, p4))
+                        {
+                            waterSubdivisionsXLayer[k, l].gradientYf = VRPoint.y;
+                            actualCount++;
+                            break;
+                        }
+
+                    }
+
+
+
+                }
+
+                if (actualCount == matrixLimit)
+                {
+                    break;
+                }
+
+            }
+
+            actualCount = 0;
+
+            for (int j = 0; j < numberWaterLayers; j++)
+            {
+                for (int k = 0; k < subdivisions; k++)
+                {
+                    if(waterSubdivisionsXLayer[j, k].gradientYf != 10000)
+                    {
+                        waterSubdivisionsXLayer[j, k].thereIsData = true;
+                        actualCount++;
+                    }
+
+                }
+            }
+
+            listWaterSubdivisionsXYear.Add(waterSubdivisionsXLayer);
+
+
+
         }
 
     }
@@ -296,17 +457,12 @@ public class TimeChange : MonoBehaviour {
 
         print(Q.x);
 
-        SalinityPreCalculations preCalculations = new SalinityPreCalculations();
-
-        salinityIndexesXYearMixDLimit = preCalculations.Load(1);
-        salinityIndexesXYearMixUlimit = preCalculations.Load(2);
-
-
+        
 
         List<Dictionary<string, object>> dataSalinity = CSVReader.Read("Data_Salinity_2005_v1");
 
 
-        SalinityPoint[] salinityPoints = new SalinityPoint[dataSalinity.Count];
+        salinityPoints = new SalinityPoint[dataSalinity.Count];
 
         for(int i = 0; i < dataSalinity.Count; i++)
         {
@@ -324,6 +480,13 @@ public class TimeChange : MonoBehaviour {
                        
             //print(i);
         }
+
+        SalinityPreCalculations preCalculations = new SalinityPreCalculations();
+
+        salinityIndexesXYearMixDLimit = preCalculations.Load(1);
+        salinityIndexesXYearMixUlimit = preCalculations.Load(2);
+
+        CreateAllWaterSubdivisions();
 
         salinityPointsXYear = new List<SalinityPoint>[yearSamples];
 
@@ -428,49 +591,7 @@ public class TimeChange : MonoBehaviour {
 
     }
 
-    Vector2 ConvertVRtoReal(Vector2 point)
-    {
 
-        Vector2 realDir;
-        Vector2 virtualDir;
-        float rotationAngle;
-        Vector2 change;
-        Vector2 realPosition;
-        //Vector2 VRPos;
-
-        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
-
-        virtualDir = (point - downLeft);
-        rotationAngle = Vector2.Angle(Vector2.right, virtualDir.normalized);
-        realDir = RotateVector((p4-p2).normalized, rotationAngle);
-        change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
-        realPosition = p2 + change;
-
-        return realPosition;
-
-    }
-
-    Vector2 ConvertRealtoVR(Vector2 point)
-    {
-
-        Vector2 realDir;
-        Vector2 virtualDir;
-        float rotationAngle;
-        Vector2 change;
-        Vector2 VRPosition;
-        //Vector2 VRPos;
-
-        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
-
-        realDir = (point - p2);
-        rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
-        virtualDir = RotateVector(Vector2.right, rotationAngle);
-        change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
-        VRPosition = downLeft + change;
-
-        return VRPosition;
-
-    }
 
     int GetWaterLayer(float actualDepth)
     {
@@ -609,7 +730,9 @@ public class TimeChange : MonoBehaviour {
                 rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
                 virtualDir = RotateVector(Vector2.right, rotationAngle);
                 change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
-                newPosition = downLeft + change;
+                //newPosition = downLeft + change;
+
+                newPosition = ConvertRealtoVR(pos);
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
 
