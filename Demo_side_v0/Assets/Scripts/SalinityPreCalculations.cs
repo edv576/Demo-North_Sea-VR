@@ -4,6 +4,10 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using CoordinateSharp;
+
+
+
 
 public class SalinityPreCalculations : MonoBehaviour
 {
@@ -11,6 +15,7 @@ public class SalinityPreCalculations : MonoBehaviour
     public static void Save(List<int>[] list, int number)
     {
   
+        
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + "/savedArray" + Convert.ToString(number) +  ".gd");
         bf.Serialize(file, list);
@@ -64,13 +69,17 @@ public class SalinityPreCalculations : MonoBehaviour
         {
             float n;
 
-            
-        
+
+            Coordinate c;
 
             if (float.TryParse(dataSalinity[i]["lon"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n))
             {
                 salinityPoints[i].x = float.Parse(dataSalinity[i]["lon"].ToString());
                 salinityPoints[i].y = float.Parse(dataSalinity[i]["lat"].ToString());
+
+                //c = new Coordinate(salinityPoints[i].y, salinityPoints[i].x);
+                //c.UTM.
+
                 salinityPoints[i].salinity = float.Parse(dataSalinity[i]["var"].ToString());
                 salinityPoints[i].waterLayer = int.Parse(dataSalinity[i]["level"].ToString());
                 salinityPoints[i].year = int.Parse(dataSalinity[i]["year"].ToString());

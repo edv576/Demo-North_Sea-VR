@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
 using System.Linq;
+using CoordinateSharp;
+
 
 struct Point2D
 {
@@ -29,6 +31,7 @@ struct WaterSubdivision
     public float gradientYf;
     public bool thereIsData;
     public float layer;
+    
 };
 
 public class TimeChange : MonoBehaviour {
@@ -286,14 +289,7 @@ public class TimeChange : MonoBehaviour {
                 for(int k = 0; k < numberWaterLayers; k++)
                 {
                     Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].x, salinityPoints[salinityIndexesXYearMixDLimit[i][j]].y));
-                    //print(j);
-                    //print(k);
-
-                    //if(k==9 && j == 1016)
-                    //{
-
-                    //    int h = 0;
-                    //}
+      
 
                     for(int l = 0; l < subdivisions; l++)
                     {
@@ -736,7 +732,7 @@ public class TimeChange : MonoBehaviour {
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
 
-                listFishSchools.ElementAt<GameObject>(i).transform.position = new Vector3(newPosition.y, fishSchool.transform.position.y, newPosition.x);
+                listFishSchools.ElementAt<GameObject>(i).transform.position = new Vector3(newPosition.x, fishSchool.transform.position.y, newPosition.y);
 
                 for (int j = 0; j < numberFish; j++)
                 {
