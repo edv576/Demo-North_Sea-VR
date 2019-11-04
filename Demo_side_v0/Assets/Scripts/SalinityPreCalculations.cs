@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using CoordinateSharp;
+using System.Diagnostics;
 
 
 
@@ -71,14 +72,21 @@ public class SalinityPreCalculations : MonoBehaviour
 
 
             Coordinate c;
+            double salinityX, salinityY;
+
 
             if (float.TryParse(dataSalinity[i]["lon"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n))
             {
                 salinityPoints[i].x = float.Parse(dataSalinity[i]["lon"].ToString());
                 salinityPoints[i].y = float.Parse(dataSalinity[i]["lat"].ToString());
 
-                //c = new Coordinate(salinityPoints[i].y, salinityPoints[i].x);
-                //c.UTM.
+               
+
+                salinityX = salinityPoints[i].x;
+                salinityY = salinityPoints[i].y;
+
+                
+
 
                 salinityPoints[i].salinity = float.Parse(dataSalinity[i]["var"].ToString());
                 salinityPoints[i].waterLayer = int.Parse(dataSalinity[i]["level"].ToString());
@@ -86,17 +94,24 @@ public class SalinityPreCalculations : MonoBehaviour
 
                 if (salinityPoints[i].salinity <= 0.5)
                 {
+                    c = new Coordinate(salinityY, salinityX);
+                    salinityPoints[i].x = (float)c.UTM.Northing;
+                    salinityPoints[i].y = (float)c.UTM.Easting;
                     salinityIndexesXYearMixDLimit[(salinityPoints[i].year - 2005) / 2].Add(i);
                 }
 
                 if (salinityPoints[i].salinity <= 30)
                 {
+                    c = new Coordinate(salinityY, salinityX);
+                    salinityPoints[i].x = (float)c.UTM.Northing;
+                    salinityPoints[i].y = (float)c.UTM.Easting;
                     salinityIndexesXYearMixUlimit[(salinityPoints[i].year - 2005) / 2].Add(i);
                 }
 
             }
 
             //print(i);
+            System.Diagnostics.Debug.WriteLine(i);
         }
 
 

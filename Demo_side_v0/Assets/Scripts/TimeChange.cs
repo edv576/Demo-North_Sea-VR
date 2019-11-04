@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
 using System.Linq;
+using System.Windows;
 using CoordinateSharp;
 
 
@@ -64,6 +65,7 @@ public class TimeChange : MonoBehaviour {
     float yPos;
     Vector3 vanishPos;
 
+
     public BoxCollider seaCollider = null;
     float maxX, minX, maxY, minY;
     float rotationAngle2;
@@ -92,6 +94,7 @@ public class TimeChange : MonoBehaviour {
         float _x = v.x * Mathf.Cos(radian) - v.y * Mathf.Sin(radian);
         float _y = v.x * Mathf.Sin(radian) + v.y * Mathf.Cos(radian);
         return new Vector2(_x, _y);
+        
     }
 
     bool onSegment(Point2D p, Point2D q, Point2D r)
@@ -381,9 +384,14 @@ public class TimeChange : MonoBehaviour {
 
         listFishSchools = new List<GameObject>();
 
+        Coordinate P1 = new Coordinate(51.88204, 3.92442);
+        Coordinate P2 = new Coordinate(51.82542, 3.99102);
 
-        p1 = new Vector2(3.92442f, 51.88204f);
-        p2 = new Vector2(3.99102f, 51.82542f);
+        
+
+
+        p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
+        p2 = new Vector2((float)P2.UTM.Northing, (float)P2.UTM.Easting);
 
         Vector2 direction = (p2 - p1).normalized;
 
@@ -670,6 +678,7 @@ public class TimeChange : MonoBehaviour {
                 StartCoroutine("WaitRespawn");
 
                 
+                
 
             }
 
@@ -727,6 +736,11 @@ public class TimeChange : MonoBehaviour {
                 //virtualDir = RotateVector(Vector2.right, rotationAngle);
                 //change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
                 //newPosition = downLeft + change;
+
+                Coordinate c = new Coordinate(pos.y, pos.x);
+
+                pos.x = (float)c.UTM.Northing;
+                pos.y = (float)c.UTM.Easting;
 
                 newPosition = ConvertRealtoVR(pos);
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
