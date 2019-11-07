@@ -6,6 +6,7 @@ using Valve.VR;
 using System.Linq;
 using System.Windows;
 using CoordinateSharp;
+using System;
 
 
 struct Point2D
@@ -14,7 +15,8 @@ struct Point2D
     public float y;
 };
 
-struct SalinityPoint
+[Serializable]
+public struct SalinityPoint
 {
     public float x;
     public float y;
@@ -34,6 +36,8 @@ struct WaterSubdivision
     public float layer;
     
 };
+
+
 
 public class TimeChange : MonoBehaviour {
   
@@ -384,14 +388,17 @@ public class TimeChange : MonoBehaviour {
 
         listFishSchools = new List<GameObject>();
 
-        Coordinate P1 = new Coordinate(51.88204, 3.92442);
-        Coordinate P2 = new Coordinate(51.82542, 3.99102);
+        //Coordinate P1 = new Coordinate(51.88204, 3.92442);
+        //Coordinate P2 = new Coordinate(51.82542, 3.99102);
 
         
 
 
-        p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
-        p2 = new Vector2((float)P2.UTM.Northing, (float)P2.UTM.Easting);
+        //p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
+        //p2 = new Vector2((float)P2.UTM.Northing, (float)P2.UTM.Easting);
+
+        p1 = new Vector2(54288.3f, 433625f);
+        p2 = new Vector2(58752.3f, 427236f);
 
         Vector2 direction = (p2 - p1).normalized;
 
@@ -461,31 +468,33 @@ public class TimeChange : MonoBehaviour {
 
         print(Q.x);
 
-        
-
-        List<Dictionary<string, object>> dataSalinity = CSVReader.Read("Data_Salinity_2005_v1");
-
-
-        salinityPoints = new SalinityPoint[dataSalinity.Count];
-
-        for(int i = 0; i < dataSalinity.Count; i++)
-        {
-            float n;
-
-            if(float.TryParse(dataSalinity[i]["lon"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n))
-            {
-                salinityPoints[i].x = float.Parse(dataSalinity[i]["lon"].ToString());
-                salinityPoints[i].y = float.Parse(dataSalinity[i]["lat"].ToString());
-                salinityPoints[i].salinity = float.Parse(dataSalinity[i]["var"].ToString());
-                salinityPoints[i].waterLayer = int.Parse(dataSalinity[i]["level"].ToString());
-                salinityPoints[i].year = int.Parse(dataSalinity[i]["year"].ToString());
-
-            }
-                       
-            //print(i);
-        }
-
         SalinityPreCalculations preCalculations = new SalinityPreCalculations();
+
+        salinityPoints = preCalculations.LoadSalinityPoints();
+
+        //List<Dictionary<string, object>> dataSalinity = CSVReader.Read("Data_Salinity");
+
+
+        //salinityPoints = new SalinityPoint[dataSalinity.Count];
+
+        //for(int i = 0; i < dataSalinity.Count; i++)
+        //{
+        //    float n;
+
+        //    if(float.TryParse(dataSalinity[i]["lon"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n))
+        //    {
+        //        salinityPoints[i].x = float.Parse(dataSalinity[i]["lon"].ToString());
+        //        salinityPoints[i].y = float.Parse(dataSalinity[i]["lat"].ToString());
+        //        salinityPoints[i].salinity = float.Parse(dataSalinity[i]["var"].ToString());
+        //        salinityPoints[i].waterLayer = int.Parse(dataSalinity[i]["level"].ToString());
+        //        salinityPoints[i].year = int.Parse(dataSalinity[i]["year"].ToString());
+
+        //    }
+                       
+        //    //print(i);
+        //}
+
+        
 
         salinityIndexesXYearMixDLimit = preCalculations.Load(1);
         salinityIndexesXYearMixUlimit = preCalculations.Load(2);

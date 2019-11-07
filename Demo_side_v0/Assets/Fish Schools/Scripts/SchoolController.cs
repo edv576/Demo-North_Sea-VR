@@ -78,14 +78,6 @@ public class SchoolController:MonoBehaviour{
 	public int _updateCounter;
 	public int _activeChildren;
 	
-    public void Respawn()
-    {
-        _posBuffer = transform.position + _posOffset;
-        _schoolSpeed = Random.Range(1.0f, _childSpeedMultipler);
-        AddFish(_childAmount);
-        Invoke("AutoRandomWaypointPosition", RandomWaypointTime());
-    }
-
 	public void Start() {
 		_posBuffer = transform.position + _posOffset;
 		_schoolSpeed = Random.Range(1.0f , _childSpeedMultipler);
@@ -183,8 +175,16 @@ public class SchoolController:MonoBehaviour{
 	public float RandomWaypointTime(){
 		return Random.Range(_randomPositionTimerMin, _randomPositionTimerMax);
 	}
-	
-	public void OnDrawGizmos() {
+
+    public void Respawn()
+    {
+        _posBuffer = transform.position + _posOffset;
+        _schoolSpeed = Random.Range(1.0f, _childSpeedMultipler);
+        AddFish(_childAmount);
+        Invoke("AutoRandomWaypointPosition", RandomWaypointTime());
+    }
+
+    public void OnDrawGizmos() {
 		if(!Application.isPlaying && _posBuffer != transform.position+ _posOffset) _posBuffer = transform.position + _posOffset;
 	   	Gizmos.color = Color.blue;
 		Gizmos.DrawWireCube (_posBuffer, new Vector3(_spawnSphere*2, _spawnSphereHeight*2 ,_spawnSphereDepth*2));
