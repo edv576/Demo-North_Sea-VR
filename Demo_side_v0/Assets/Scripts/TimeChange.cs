@@ -524,7 +524,7 @@ public class TimeChange : MonoBehaviour {
 
 
 
-        List<Dictionary<string, object>> dataFish = CSVReader.Read("Clupea_harengus_WMR2");
+        List<Dictionary<string, object>> dataFish = CSVReader.Read("Clupea");
 
         Algorithms alg = new Algorithms();
 
@@ -539,8 +539,8 @@ public class TimeChange : MonoBehaviour {
             for (int j = 0; j < dataFish.Count; j++)
             {
 
-                double x = double.Parse(dataFish[j]["x"].ToString());
-                double y = double.Parse(dataFish[j]["y"].ToString());
+                double x = double.Parse(dataFish[j]["X"].ToString());
+                double y = double.Parse(dataFish[j]["Y"].ToString());
 
 
 
@@ -552,7 +552,7 @@ public class TimeChange : MonoBehaviour {
 
                 int year = startYear + i * yearStep;
 
-                string yearMonth = year.ToString() + "-05-";
+                string yearMonth = "-5-" + year.ToString();
 
                 if (alg.InAreaOfStudy_4Vertices(pos, p1, p2, p3, p4) && dateExtraction.Contains(yearMonth))
                 {
@@ -746,10 +746,10 @@ public class TimeChange : MonoBehaviour {
                 //change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
                 //newPosition = downLeft + change;
 
-                Coordinate c = new Coordinate(pos.y, pos.x);
+                //Coordinate c = new Coordinate(pos.y, pos.x);
 
-                pos.x = (float)c.UTM.Northing;
-                pos.y = (float)c.UTM.Easting;
+                //pos.x = (float)c.UTM.Northing;
+                //pos.y = (float)c.UTM.Easting;
 
                 newPosition = ConvertRealtoVR(pos);
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;

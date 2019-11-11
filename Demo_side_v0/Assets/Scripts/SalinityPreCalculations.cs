@@ -105,11 +105,11 @@ public class SalinityPreCalculations : MonoBehaviour
             //Coordinate c;
             //double salinityX, salinityY;
 
-            if(i == 58346)
-            {
-                int p = 0;
+            //if(i == 58346)
+            //{
+            //    int p = 0;
 
-            }
+            //}
 
             if (float.TryParse(dataSalinity[i]["X"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n) &&
                 float.TryParse(dataSalinity[i]["Y"].ToString(), out n))
@@ -129,7 +129,7 @@ public class SalinityPreCalculations : MonoBehaviour
                     salinityIndexesXYearMixDLimit[(salinityPoints[i].year - 2005) / 2].Add(i);
                 }
 
-                if (salinityPoints[i].salinity <= 30 && salinityPoints[i].year != 0)
+                if (salinityPoints[i].salinity <= 33 && salinityPoints[i].year != 0)
                 {
                     //c = new Coordinate(salinityY, salinityX);
                     //salinityPoints[i].x = (float)c.UTM.Northing;
@@ -140,7 +140,7 @@ public class SalinityPreCalculations : MonoBehaviour
             }
 
             //print(i);
-            System.Diagnostics.Debug.WriteLine(i);
+            //System.Diagnostics.Debug.WriteLine(i);
         }
 
 
