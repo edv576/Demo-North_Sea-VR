@@ -49,6 +49,8 @@ public class TimeChange : MonoBehaviour {
     public Renderer waterRenderer;
     public GameObject playerObject;
     public GameObject fishSchool;
+    public GameObject unitSalinityDivision;
+    List<GameObject> allUnitSalinityDivisions;
     List<GameObject> listFishSchools;
     Vector3 initialPlayerPosition;
     Vector3 lastPlayerPosition;
@@ -283,6 +285,7 @@ public class TimeChange : MonoBehaviour {
                     startWaterSubdivision.xf = downLeft.y - (k + 1) * intervalSubdivision;
                     startWaterSubdivision.gradientY0 = 10000;
                     startWaterSubdivision.gradientYf = 10000;
+                    startWaterSubdivision.layer = 0;
                     waterSubdivisionsXLayer[j, k] = startWaterSubdivision;
                 }
             }
@@ -296,17 +299,26 @@ public class TimeChange : MonoBehaviour {
                 for(int k = 0; k < numberWaterLayers; k++)
                 {
                     Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].x, salinityPoints[salinityIndexesXYearMixDLimit[i][j]].y));
+
+                    bool gotIt = false;
       
 
                     for(int l = 0; l < subdivisions; l++)
                     {
-                        if(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].waterLayer - 1 == k && waterSubdivisionsXLayer[k,l].gradientY0 == 10000 && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2,p3,p4))
+                        if((salinityPoints[salinityIndexesXYearMixDLimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k,l].gradientY0 == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2,p3,p4))
                         {
                             waterSubdivisionsXLayer[k, l].gradientY0 = VRPoint.x;
+                            waterSubdivisionsXLayer[k, l].layer = k + 1;
                             actualCount++;
+                            gotIt = true;
                             break;
                         }
 
+                    }
+
+                    if (gotIt)
+                    {
+                        break;
                     }
 
 
@@ -327,15 +339,26 @@ public class TimeChange : MonoBehaviour {
                 {
                     Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[i][j]].x, salinityPoints[salinityIndexesXYearMixUlimit[i][j]].y));
 
+                    bool gotIt = false;
+
                     for (int l = 0; l < subdivisions; l++)
                     {
-                        if (salinityPoints[salinityIndexesXYearMixUlimit[i][j]].waterLayer - 1 == k && waterSubdivisionsXLayer[k, l].gradientYf == 10000 && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2, p3, p4))
+
+
+                        if ((salinityPoints[salinityIndexesXYearMixUlimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k, l].gradientYf == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2, p3, p4))
                         {
                             waterSubdivisionsXLayer[k, l].gradientYf = VRPoint.x;
+                            waterSubdivisionsXLayer[k, l].layer = k + 1;
                             actualCount++;
+                            gotIt = true;
                             break;
                         }
 
+                    }
+
+                    if (gotIt)
+                    {
+                        break;
                     }
 
 
@@ -369,6 +392,46 @@ public class TimeChange : MonoBehaviour {
 
 
         }
+
+    }
+
+    void CreateSalinityDivisions(int indexYear)
+    {
+        float initialDepth = seaCollider.bounds.max.y;
+        float interval = (initialDepth - unitSalinityDivision.transform.position.y)/10;
+
+        if(allUnitSalinityDivisions.Count > 0)
+        {
+            for(int i = 0; i < allUnitSalinityDivisions.Count; i++)
+            {
+                Destroy(allUnitSalinityDivisions[i]);
+            }
+        }
+
+        allUnitSalinityDivisions = new List<GameObject>();
+
+        for(int i = 0; i < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(0); i++)
+        {
+            for (int j = 0; j < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(1); j++)
+            {
+                if (listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j].thereIsData)
+                {
+                    WaterSubdivision waterSubdivision = listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j];
+                    Vector3 unitSalinityDivisionPos = new Vector3(waterSubdivision.gradientYf,
+                        initialDepth - interval * (waterSubdivision.layer - 1), (waterSubdivision.x0 + waterSubdivision.xf) / 2);
+                    GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
+                        unitSalinityDivision.transform.rotation);
+
+                    cloneUnitySalinityDivision.transform.localScale = new Vector3(waterSubdivision.x0 - waterSubdivision.xf,
+                        waterSubdivision.x0 - waterSubdivision.xf, waterSubdivision.x0 - waterSubdivision.xf)*1f;
+
+                    allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
+
+                }
+            }
+
+        }
+
 
     }
 
@@ -503,7 +566,9 @@ public class TimeChange : MonoBehaviour {
 
         salinityPointsXYear = new List<SalinityPoint>[yearSamples];
 
+        allUnitSalinityDivisions = new List<GameObject>();
 
+        CreateSalinityDivisions(nActualYear);
 
         for (int i = 0; i < yearSamples; i++)
         {
