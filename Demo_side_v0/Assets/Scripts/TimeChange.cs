@@ -223,6 +223,8 @@ public class TimeChange : MonoBehaviour {
         change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
         realPosition = p2 + change;
 
+        float rotationAngle2 = Vector2.Angle((p4 - p2).normalized, Vector2.right);
+
         return realPosition;
 
     }

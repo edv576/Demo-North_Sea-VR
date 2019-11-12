@@ -8,9 +8,10 @@ public class SeaBedChange : MonoBehaviour {
     public Mesh[] seaBeds;
     int nActualSeaBed;
     public GameObject seaBed;
+    public int initialYear;
     Text dataTimeText;
     Text dataCoordinatesText;
-    GameObject userObject;
+    public GameObject userObject;
     
     // Use this for initialization
     void Start () {
@@ -18,8 +19,8 @@ public class SeaBedChange : MonoBehaviour {
         nActualSeaBed = 0;
         dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
         dataCoordinatesText = GameObject.Find("Data Coordinates Text").GetComponent<Text>();
-        userObject = GameObject.Find("OVRPlayerController");
-        dataTimeText.text = "Year: " + (nActualSeaBed + 2010).ToString();
+        //userObject = GameObject.Find("OVRPlayerController");
+        dataTimeText.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
         //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x,2).ToString() + ", " +
         //    System.Math.Round(userObject.transform.position.y, 2) + ", " +
         //    System.Math.Round(userObject.transform.position.z, 2);
