@@ -24,7 +24,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 
         nActualSeaBed = 0;
         dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
-        dataCoordinatesText = GameObject.Find("Data Coordinates Text").GetComponent<Text>();
+        //dataCoordinatesText = GameObject.Find("Data Coordinates Text").GetComponent<Text>();
         //userObject = GameObject.Find("OVRPlayerController");
         dataTimeText.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
         //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x,2).ToString() + ", " +
@@ -65,9 +65,9 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 
         }
 
-        dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x, 1).ToString() + ", " +
-                    System.Math.Round(userObject.transform.position.y, 1) + ", " +
-                    System.Math.Round(userObject.transform.position.z, 1);
+        //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x, 1).ToString() + ", " +
+        //            System.Math.Round(userObject.transform.position.y, 1) + ", " +
+        //            System.Math.Round(userObject.transform.position.z, 1);
 
 
 

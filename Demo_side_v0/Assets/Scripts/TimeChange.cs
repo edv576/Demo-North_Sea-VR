@@ -72,7 +72,8 @@ public class TimeChange : MonoBehaviour {
     Vector3 vanishPos;
 
 
-    public BoxCollider seaCollider = null;
+    public BoxCollider seaFloorCollider = null;
+    public BoxCollider seaWaterCollider = null;
     float maxX, minX, maxY, minY;
     float rotationAngle2;
     float RWDiagonalDistance;
@@ -269,7 +270,7 @@ public class TimeChange : MonoBehaviour {
         listWaterSubdivisionsXYear = new List<WaterSubdivision[,]>();
         float intervalSubdivision;
 
-        intervalSubdivision = Mathf.Abs(seaCollider.bounds.max.z - seaCollider.bounds.min.z)/subdivisions;
+        intervalSubdivision = Mathf.Abs(seaFloorCollider.bounds.max.z - seaFloorCollider.bounds.min.z)/subdivisions;
 
         
 
@@ -399,7 +400,7 @@ public class TimeChange : MonoBehaviour {
 
     void CreateSalinityDivisions(int indexYear)
     {
-        float initialDepth = seaCollider.bounds.max.y;
+        float initialDepth = seaWaterCollider.bounds.max.y;
         float interval = (initialDepth - unitSalinityDivision.transform.position.y)/10;
 
         if(allUnitSalinityDivisions.Count > 0)
@@ -517,8 +518,8 @@ public class TimeChange : MonoBehaviour {
 
         RWDiagonalDistance = (p3 - p2).magnitude;
 
-        upperRight = new Vector2(seaCollider.bounds.max.x, seaCollider.bounds.max.x);
-        downLeft = new Vector2(seaCollider.bounds.min.x, seaCollider.bounds.max.z);
+        upperRight = new Vector2(seaFloorCollider.bounds.max.x, seaFloorCollider.bounds.max.x);
+        downLeft = new Vector2(seaFloorCollider.bounds.min.x, seaFloorCollider.bounds.max.z);
         VRDiagonalDistance = (upperRight - downLeft).magnitude;
 
         
@@ -740,7 +741,7 @@ public class TimeChange : MonoBehaviour {
         
         //if (OVRInput.GetUp(OVRInput.Button.Three) || Input.GetKeyDown(KeyCode.DownArrow))
         if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
-            {
+        {
             
             if(nActualYear > 0)
             {
