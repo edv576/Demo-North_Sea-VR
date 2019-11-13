@@ -748,7 +748,7 @@ public class TimeChange : MonoBehaviour {
 
                 nActualYear--;
                 dataTimeText.text = "Year: " + (nActualYear*2 + startYear).ToString();
-                playerObject.transform.position = initialPlayerPosition;
+                //playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
@@ -770,7 +770,7 @@ public class TimeChange : MonoBehaviour {
 
                 nActualYear++;
                 dataTimeText.text = "Year: " + (nActualYear*2 + startYear).ToString();
-                playerObject.transform.position = initialPlayerPosition;
+                //playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 

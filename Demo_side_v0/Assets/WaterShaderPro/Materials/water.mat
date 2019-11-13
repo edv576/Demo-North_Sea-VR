@@ -1,0 +1,111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: water
+  m_Shader: {fileID: 4800000, guid: 16c459c4cd65e7f4999c0cad24e57eb6, type: 3}
+  m_ShaderKeywords: _USEVERTEXCOLORMASK_ON
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeightMask:
+        m_Texture: {fileID: 2800000, guid: 700fe5f700bcdd44ea2e37faeedfbb35, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture0:
+        m_Texture: {fileID: 2800000, guid: a4971fc01be23a245b0e18a3e21d979c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _BumpScale: 1
+    - _ChromaticAberration: 0.177
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _Distortion: 0.0000054
+    - _DstBlend: 0
+    - _EmmisionPower: 3.86
+    - _Fade: 16.6
+    - _FoamExponent: 1.24
+    - _Gloss: 0.806
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Opacity: 0.814
+    - _Parallax: 0.02
+    - _Scale: 0.03
+    - _Smooth: 1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _TransAmbient: 0.098
+    - _TransDirect: 0.934
+    - _TransNormalDistortion: 0
+    - _TransScattering: 16.5
+    - _TransShadow: 0.348
+    - _Translucency: 2.6
+    - _UVSec: 0
+    - _UseVertexColorMask: 1
+    - _VertexColorExp: 3.87
+    - _ZWrite: 1
+    - __dirty: 0
+    - _offset: 0
+    m_Colors:
+    - _BeachColor: {r: 0.05887328, g: 0.084905684, b: 0.07743227, a: 0.39215687}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorFirst: {r: 0, g: 0.011994706, b: 0.23584908, a: 0}
+    - _ColorSecond: {r: 0.4575472, g: 0.74903846, b: 1, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamColor: {r: 0.9433962, g: 0.84994656, b: 0.84994656, a: 0}
+    - _RefractRemap: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecColor: {r: 0.2862745, g: 0.6179836, b: 0.67058825, a: 1}
+    - _TranslucentColor: {r: 0, g: 0, b: 0, a: 0}
