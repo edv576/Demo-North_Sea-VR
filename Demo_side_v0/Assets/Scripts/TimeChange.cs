@@ -571,7 +571,7 @@ public class TimeChange : MonoBehaviour {
 
         allUnitSalinityDivisions = new List<GameObject>();
 
-        CreateSalinityDivisions(nActualYear);
+        //CreateSalinityDivisions(nActualYear);
 
         for (int i = 0; i < yearSamples; i++)
         {
@@ -831,7 +831,7 @@ public class TimeChange : MonoBehaviour {
                     yield return new WaitForSeconds(.001f);
                 }
 
-                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i); ;
+                listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i)*10;
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
             }
             else
