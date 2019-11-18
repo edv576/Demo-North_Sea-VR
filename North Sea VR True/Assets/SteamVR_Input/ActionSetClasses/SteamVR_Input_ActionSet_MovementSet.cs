@@ -14,7 +14,23 @@ namespace Valve.VR
     using UnityEngine;
     
     
-    public class SteamVR_Input_ActionSet_NewSet : Valve.VR.SteamVR_ActionSet
+    public class SteamVR_Input_ActionSet_MovementSet : Valve.VR.SteamVR_ActionSet
     {
+        
+        public virtual SteamVR_Action_Boolean ClickMove
+        {
+            get
+            {
+                return SteamVR_Actions.movementSet_ClickMove;
+            }
+        }
+        
+        public virtual SteamVR_Action_Vector2 ClickAxis
+        {
+            get
+            {
+                return SteamVR_Actions.movementSet_ClickAxis;
+            }
+        }
     }
 }
