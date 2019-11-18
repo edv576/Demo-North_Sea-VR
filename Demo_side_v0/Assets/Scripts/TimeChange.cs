@@ -571,7 +571,7 @@ public class TimeChange : MonoBehaviour {
 
         allUnitSalinityDivisions = new List<GameObject>();
 
-        //CreateSalinityDivisions(nActualYear);
+        CreateSalinityDivisions(nActualYear);
 
         for (int i = 0; i < yearSamples; i++)
         {
