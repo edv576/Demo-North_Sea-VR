@@ -12,6 +12,9 @@ public class UserMovement_VIVE : MonoBehaviour {
     public SteamVR_Action_Boolean clickMove;
     public SteamVR_Action_Vector2 clickAxis;
     public SteamVR_Input_Sources handtype;
+    BoxCollider limitCollider;
+
+    public GameObject seaBed;
 
 
     private void Awake()
@@ -20,10 +23,24 @@ public class UserMovement_VIVE : MonoBehaviour {
         clickAxis = SteamVR_Actions.MovementSet.ClickAxis;
     }
 
+    bool IsInLimits()
+    {
+        if(playerObject.transform.position.x > limitCollider.bounds.min.x && playerObject.transform.position.x < limitCollider.bounds.max.x &&
+            playerObject.transform.position.z > limitCollider.bounds.min.z && playerObject.transform.position.z < limitCollider.bounds.max.z)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
     // Use this for initialization
     void Start () {
 
-
+        limitCollider = seaBed.GetComponent<BoxCollider>();
 
 
    
@@ -35,15 +52,36 @@ public class UserMovement_VIVE : MonoBehaviour {
 
         if (clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
         {
+            if (IsInLimits())
+            {
+                playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 20.0f;
+            }
+            else
+            {
+                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 100.0f;
+            }
             
-            playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 20.0f;
+            
         }
+
+
 
         if (clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
         {
-            playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 3.0f;
+            if (IsInLimits())
+            {
+                playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 3.0f;
+            }
+            else
+            {
+                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 100.0f;
+            }
+
+            
 
         }
+   
+       
 
 
 

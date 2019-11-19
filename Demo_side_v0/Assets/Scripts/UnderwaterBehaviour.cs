@@ -40,7 +40,7 @@ public class UnderwaterBehaviour : MonoBehaviour
 
     void SetNormal()
     {
-        //RenderSettings.fog = false;
+        RenderSettings.fog = false;
         RenderSettings.skybox = skyboxOverWater;
         RenderSettings.fogColor = normalColor;
         RenderSettings.fogDensity = 0.001f;
@@ -51,7 +51,7 @@ public class UnderwaterBehaviour : MonoBehaviour
         RenderSettings.fog = true;
         RenderSettings.skybox = skyboxUnderWater;
         RenderSettings.fogColor = underwaterColor;
-        RenderSettings.fogDensity = 0.0025f;
+        RenderSettings.fogDensity = 0.001f;
         RenderSettings.fogStartDistance *= 10;
 
     }
