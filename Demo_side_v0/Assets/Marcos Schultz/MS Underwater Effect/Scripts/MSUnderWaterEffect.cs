@@ -266,27 +266,29 @@ public class MSUnderWaterEffect : MonoBehaviour{
 		}
 	}
 
-	void FourTapCone (RenderTexture source, RenderTexture dest, int iteration){
-		float off = 0.5f + iteration*blurSpread;
-		Graphics.BlitMultiTap (source, dest, materialBlur,
-			new Vector2(-off, -off),
-			new Vector2(-off,  off),
-			new Vector2( off,  off),
-			new Vector2( off, -off)
-		);
-	}
+    void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
+    {
+        float off = 0.01f + iteration * blurSpread;
+        Graphics.BlitMultiTap(source, dest, materialBlur,
+            new Vector2(-off, -off),
+            new Vector2(-off, off),
+            new Vector2(off, off),
+            new Vector2(off, -off)
+        );
+    }
 
-	void DownSample4x (RenderTexture source, RenderTexture dest){
-		float off = 1.0f;
-		Graphics.BlitMultiTap (source, dest, materialBlur,
-			new Vector2(-off, -off),
-			new Vector2(-off,  off),
-			new Vector2( off,  off),
-			new Vector2( off, -off)
-		);
-	}
+    void DownSample4x(RenderTexture source, RenderTexture dest)
+    {
+        //float off = 1.0f;
+        //Graphics.BlitMultiTap (source, dest, materialBlur,
+        //	new Vector2(-off, -off),
+        //	new Vector2(-off,  off),
+        //	new Vector2( off,  off),
+        //	new Vector2( off, -off)
+        //);
+    }
 
-	void RenderDistortion(Material material, RenderTexture source, RenderTexture destination, float angle, Vector2 center, Vector2 radius){
+    void RenderDistortion(Material material, RenderTexture source, RenderTexture destination, float angle, Vector2 center, Vector2 radius){
 		bool invertY = source.texelSize.y < 0.0f;
 		if (invertY){
 			center.y = 1.0f - center.y;
