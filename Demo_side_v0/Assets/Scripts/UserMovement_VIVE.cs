@@ -54,11 +54,11 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
-                playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 20.0f;
+                playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 80.0f;
             }
             else
             {
-                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 100.0f;
+                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
             
             
@@ -70,16 +70,18 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
-                playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 3.0f;
+                playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 30.0f;
             }
             else
             {
-                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 100.0f;
+                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
 
             
 
         }
+
+  
    
        
 

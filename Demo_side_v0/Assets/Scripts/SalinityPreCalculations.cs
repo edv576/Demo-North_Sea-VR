@@ -129,7 +129,7 @@ public class SalinityPreCalculations : MonoBehaviour
                     salinityIndexesXYearMixDLimit[(salinityPoints[i].year - 2005) / 2].Add(i);
                 }
 
-                if (salinityPoints[i].salinity <= 33 && salinityPoints[i].year != 0)
+                if (salinityPoints[i].salinity <= 10 && salinityPoints[i].year != 0)
                 {
                     //c = new Coordinate(salinityY, salinityX);
                     //salinityPoints[i].x = (float)c.UTM.Northing;

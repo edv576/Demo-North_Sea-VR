@@ -413,27 +413,54 @@ public class TimeChange : MonoBehaviour {
 
         allUnitSalinityDivisions = new List<GameObject>();
 
-        for(int i = 0; i < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(0); i++)
+        Algorithms alg = new Algorithms();
+
+
+        for (int i=0;i< salinityIndexesXYearMixUlimit[indexYear].Count; i++)
         {
-            for (int j = 0; j < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(1); j++)
-            {
-                if (listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j].thereIsData)
-                {
-                    WaterSubdivision waterSubdivision = listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j];
-                    Vector3 unitSalinityDivisionPos = new Vector3(waterSubdivision.gradientYf,
-                        initialDepth - interval * (waterSubdivision.layer - 1), (waterSubdivision.x0 + waterSubdivision.xf) / 2);
-                    GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
-                        unitSalinityDivision.transform.rotation);
+            Vector2 realPoint = new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].x, salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].y);
+            Vector2 VRPoint = ConvertRealtoVR(realPoint);
 
-                    cloneUnitySalinityDivision.transform.localScale = new Vector3(waterSubdivision.x0 - waterSubdivision.xf,
-                        waterSubdivision.x0 - waterSubdivision.xf, waterSubdivision.x0 - waterSubdivision.xf)*1f;
+            //if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
+            //{
+                Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
+                        initialDepth - interval * (salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer - 1), VRPoint.y);
 
-                    allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
+                GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
+                            unitSalinityDivision.transform.rotation);
 
-                }
-            }
+                cloneUnitySalinityDivision.transform.localScale = Vector3.one * 10f;
+
+                allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
+            //}
+
+
 
         }
+
+        //for(int i = 0; i < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(0); i++)
+        //{
+        //    for (int j = 0; j < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(1); j++)
+        //    {
+        //        if (listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j].thereIsData)
+        //        {
+        //            WaterSubdivision waterSubdivision = listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j];
+        //            Vector3 unitSalinityDivisionPos = new Vector3(waterSubdivision.gradientYf,
+        //                initialDepth - interval * (waterSubdivision.layer - 1), (waterSubdivision.x0 + waterSubdivision.xf) / 2);
+        //            GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
+        //                unitSalinityDivision.transform.rotation);
+
+        //            cloneUnitySalinityDivision.transform.localScale = new Vector3(waterSubdivision.x0 - waterSubdivision.xf,
+        //                waterSubdivision.x0 - waterSubdivision.xf, waterSubdivision.x0 - waterSubdivision.xf)*1f;
+
+        //            allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
+
+        //        }
+        //    }
+
+        //}
+
+
 
 
     }
@@ -518,7 +545,7 @@ public class TimeChange : MonoBehaviour {
 
         RWDiagonalDistance = (p3 - p2).magnitude;
 
-        upperRight = new Vector2(seaFloorCollider.bounds.max.x, seaFloorCollider.bounds.max.x);
+        upperRight = new Vector2(seaFloorCollider.bounds.max.x, seaFloorCollider.bounds.min.z);
         downLeft = new Vector2(seaFloorCollider.bounds.min.x, seaFloorCollider.bounds.max.z);
         VRDiagonalDistance = (upperRight - downLeft).magnitude;
 
@@ -740,7 +767,7 @@ public class TimeChange : MonoBehaviour {
 
         
         //if (OVRInput.GetUp(OVRInput.Button.Three) || Input.GetKeyDown(KeyCode.DownArrow))
-        if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
+        if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             
             if(nActualYear > 0)
@@ -752,6 +779,10 @@ public class TimeChange : MonoBehaviour {
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
+                print(nActualYear * 2 + startYear);
+
+                //CreateSalinityDivisions(nActualYear);
+
                 StartCoroutine("WaitRespawn");
 
                 
@@ -762,8 +793,8 @@ public class TimeChange : MonoBehaviour {
         }
 
         //if (OVRInput.GetUp(OVRInput.Button.Four) || Input.GetKeyDown(KeyCode.UpArrow))
-        if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
-            {
+        if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
             if (nActualYear < yearSamples - 1)
             {
 
@@ -773,6 +804,10 @@ public class TimeChange : MonoBehaviour {
                 //playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
+
+                print(nActualYear * 2 + startYear);
+
+                //CreateSalinityDivisions(nActualYear);
 
                 StartCoroutine("WaitRespawn");
 
