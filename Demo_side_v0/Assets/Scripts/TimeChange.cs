@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using CoordinateSharp;
 using MIConvexHull;
+using g3;
 using System;
 
 
@@ -71,6 +72,7 @@ public class TimeChange : MonoBehaviour {
     SalinityPoint[] salinityPoints;
     float yPos;
     Vector3 vanishPos;
+    List<double[]> allFreshSalinityPoints;
 
     
 
@@ -413,9 +415,61 @@ public class TimeChange : MonoBehaviour {
             }
         }
 
+        
+
         allUnitSalinityDivisions = new List<GameObject>();
+        allFreshSalinityPoints = new List<double[]>();
+        List<DefaultVertex> listConvexHullSalinityV = new List<DefaultVertex>();
+        List<DefaultConvexFace<DefaultVertex>> listConvexHullSalinityF = new List<DefaultConvexFace<DefaultVertex>>();
 
         Algorithms alg = new Algorithms();
+
+        for (int i = 0; i < salinityIndexesXYearMixUlimit[indexYear].Count; i++)
+        {
+            Vector2 realPoint = new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].x, salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].y);
+            Vector2 VRPoint = ConvertRealtoVR(realPoint);
+
+
+
+            if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
+            {
+                Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
+                    initialDepth - interval * (salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer - 1), VRPoint.y);
+
+                double[] VRPoint_h = { unitSalinityDivisionPos.x, unitSalinityDivisionPos.y, unitSalinityDivisionPos.z };
+
+                allFreshSalinityPoints.Add(VRPoint_h);
+            }
+
+        }
+
+        //Sphere3Generator_NormalizedCube gen = new Sphere3Generator_NormalizedCube() { EdgeVertices = 20 };
+        //DMesh3 mesh = gen.Generate().MakeDMesh();
+        //MeshNormals.QuickCompute(mesh);
+        //PointAABBTree3 pointBVTree = new PointAABBTree3(mesh, true);
+
+        //DMesh3 pointSet = DMesh3Builder.Build(allFreshSalinityPoints, allFreshSalinityPoints, allFreshSalinityPoints);
+
+        //// estimate point area based on nearest-neighbour distance
+        //double[] areas = new double[pointSet.MaxVertexID];
+        //foreach (int vid in pointSet.VertexIndices())
+        //{
+        //    pointBVTree.PointFilterF = (i) => { return i != vid; };   // otherwise vid is nearest to vid!
+        //    int near_vid = pointBVTree.FindNearestPoint(pointSet.GetVertex(vid));
+        //    double dist = pointSet.GetVertex(vid).Distance(pointSet.GetVertex(near_vid));
+        //    areas[vid] = Circle2d.RadiusArea(dist);
+        //}
+        //pointBVTree.FWNAreaEstimateF = (vid) => {
+        //    return areas[vid];
+        //};
+
+        //var convexHull = ConvexHull.Create(allFreshSalinityPoints);
+
+        //listConvexHullSalinityV = convexHull.Result.Points.ToList();
+        //listConvexHullSalinityF = convexHull.Result.Faces.ToList();
+
+        
+
 
 
         for (int i=0;i< salinityIndexesXYearMixUlimit[indexYear].Count; i++)
@@ -423,10 +477,19 @@ public class TimeChange : MonoBehaviour {
             Vector2 realPoint = new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].x, salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].y);
             Vector2 VRPoint = ConvertRealtoVR(realPoint);
 
-            //if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
-            //{
+
+
+            if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
+            {
                 Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
                         initialDepth - interval * (salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer - 1), VRPoint.y);
+
+
+            
+
+
+
+
 
                 GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
                             unitSalinityDivision.transform.rotation);
@@ -434,7 +497,7 @@ public class TimeChange : MonoBehaviour {
                 cloneUnitySalinityDivision.transform.localScale = Vector3.one * 10f;
 
                 allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
-            //}
+            }
 
 
 
@@ -486,8 +549,8 @@ public class TimeChange : MonoBehaviour {
         //Coordinate P1 = new Coordinate(51.88204, 3.92442);
         //Coordinate P2 = new Coordinate(51.82542, 3.99102);
 
-
         
+
 
         //p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
         //p2 = new Vector2((float)P2.UTM.Northing, (float)P2.UTM.Easting);
@@ -593,6 +656,8 @@ public class TimeChange : MonoBehaviour {
 
         salinityIndexesXYearMixDLimit = preCalculations.Load(1);
         salinityIndexesXYearMixUlimit = preCalculations.Load(2);
+
+      
 
         CreateAllWaterSubdivisions();
 
