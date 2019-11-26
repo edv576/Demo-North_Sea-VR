@@ -6,6 +6,7 @@ using Valve.VR;
 using System.Linq;
 using System.Windows;
 using CoordinateSharp;
+using MIConvexHull;
 using System;
 
 
@@ -71,6 +72,7 @@ public class TimeChange : MonoBehaviour {
     float yPos;
     Vector3 vanishPos;
 
+    
 
     public BoxCollider seaFloorCollider = null;
     public BoxCollider seaWaterCollider = null;
@@ -484,8 +486,8 @@ public class TimeChange : MonoBehaviour {
         //Coordinate P1 = new Coordinate(51.88204, 3.92442);
         //Coordinate P2 = new Coordinate(51.82542, 3.99102);
 
-        
 
+        
 
         //p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
         //p2 = new Vector2((float)P2.UTM.Northing, (float)P2.UTM.Easting);
@@ -598,7 +600,7 @@ public class TimeChange : MonoBehaviour {
 
         allUnitSalinityDivisions = new List<GameObject>();
 
-        //CreateSalinityDivisions(nActualYear);
+        CreateSalinityDivisions(nActualYear);
 
         for (int i = 0; i < yearSamples; i++)
         {
@@ -781,7 +783,7 @@ public class TimeChange : MonoBehaviour {
 
                 print(nActualYear * 2 + startYear);
 
-                //CreateSalinityDivisions(nActualYear);
+                CreateSalinityDivisions(nActualYear);
 
                 StartCoroutine("WaitRespawn");
 
@@ -807,7 +809,7 @@ public class TimeChange : MonoBehaviour {
 
                 print(nActualYear * 2 + startYear);
 
-                //CreateSalinityDivisions(nActualYear);
+                CreateSalinityDivisions(nActualYear);
 
                 StartCoroutine("WaitRespawn");
 
