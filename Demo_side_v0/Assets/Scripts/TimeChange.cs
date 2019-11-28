@@ -479,22 +479,16 @@ public class TimeChange : MonoBehaviour {
 
 
 
-            if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
-            {
+            //if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
+            if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4))
+                {
                 Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
                         initialDepth - interval * (salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer - 1), VRPoint.y);
-
-
-            
-
-
-
-
 
                 GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
                             unitSalinityDivision.transform.rotation);
 
-                cloneUnitySalinityDivision.transform.localScale = Vector3.one * 10f;
+                cloneUnitySalinityDivision.transform.localScale = new Vector3(4.0f, 1.5f, 4.0f) *  15f;
 
                 allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
             }
