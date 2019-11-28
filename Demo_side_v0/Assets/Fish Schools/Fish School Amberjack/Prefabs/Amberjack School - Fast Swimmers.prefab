@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _childPrefab:
-  - {fileID: 11400000, guid: 931bf914c01545340b4f558859dcd2ed, type: 3}
+  - {fileID: -5860141516238453367, guid: 9cd36051bb900944f98dbe584d4760d4, type: 3}
   _groupChildToNewTransform: 0
   _groupTransform: {fileID: 0}
   _groupName: 
