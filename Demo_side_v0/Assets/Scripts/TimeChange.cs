@@ -543,7 +543,7 @@ public class TimeChange : MonoBehaviour {
         //Coordinate P1 = new Coordinate(51.88204, 3.92442);
         //Coordinate P2 = new Coordinate(51.82542, 3.99102);
 
-        
+
 
 
         //p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
@@ -551,6 +551,9 @@ public class TimeChange : MonoBehaviour {
 
         p1 = new Vector2(54288.3f, 433625f);
         p2 = new Vector2(58752.3f, 427236f);
+
+        p1 = new Vector2(54014f, 434364f);
+        p2 = new Vector2(57126f, 430334f);
 
         Vector2 direction = (p2 - p1).normalized;
 
