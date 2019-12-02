@@ -13,8 +13,15 @@ public class UserMovement_VIVE : MonoBehaviour {
     public SteamVR_Action_Vector2 clickAxis;
     public SteamVR_Input_Sources handtype;
     BoxCollider limitCollider;
+    private int collisionCount;
+
 
     public GameObject seaBed;
+
+    public bool IsNotColliding
+    {
+        get { return collisionCount == 0; }
+    }
 
 
     private void Awake()
@@ -35,6 +42,24 @@ public class UserMovement_VIVE : MonoBehaviour {
             return false;
         }
 
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if(col.gameObject.tag == "salinity")
+        {
+            collisionCount++;
+        }
+        
+
+    }
+
+    void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.tag == "salinity")
+        {
+            collisionCount--;
+        }
     }
 
     // Use this for initialization

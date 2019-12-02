@@ -52,6 +52,10 @@ public class TimeChange : MonoBehaviour {
     public GameObject playerObject;
     public GameObject fishSchool;
     public GameObject unitSalinityDivision;
+    public int maximumAlpha;
+    public int visibilityAlpha;
+    public float limitUpFreshWaterValue;
+    public float limitDownFreshWaterValue;
     List<GameObject> allUnitSalinityDivisions;
     List<GameObject> listFishSchools;
     Vector3 initialPlayerPosition;
@@ -492,6 +496,15 @@ public class TimeChange : MonoBehaviour {
 
                 cloneUnitySalinityDivision.transform.localScale = new Vector3(5.0f, 2.0f, 5.0f) *  15f;
 
+                Color tempColor = unitSalinityDivision.GetComponent<Renderer>().material.color;
+
+                tempColor.a = (1 - salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].salinity / limitUpFreshWaterValue) * tempColor.a;
+
+                cloneUnitySalinityDivision.GetComponent<Renderer>().material.color = tempColor;
+
+                cloneUnitySalinityDivision.GetComponent<SalinityPointInfo>().originalAlpha = tempColor.a;
+                cloneUnitySalinityDivision.GetComponent<SalinityPointInfo>().visibilityAlpha = (float)visibilityAlpha / 255;
+
                 allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
             }
 
@@ -523,6 +536,37 @@ public class TimeChange : MonoBehaviour {
 
 
 
+
+    }
+
+    void ChangeColorSalinityPoints(int typeChange)
+    {
+        if((typeChange == 1) || (typeChange == 2) || (allFreshSalinityPoints.Count > 0))
+        {
+            Color tempColor;
+
+
+            for(int i = 0; i < allUnitSalinityDivisions.Count; i++)
+            {
+                tempColor = allUnitSalinityDivisions[i].GetComponent<Renderer>().material.color;
+
+                if(typeChange == 1)
+                {
+                    tempColor.a = allUnitSalinityDivisions[i].GetComponent<SalinityPointInfo>().originalAlpha;
+                }
+                else
+                {
+                    tempColor.a = allUnitSalinityDivisions[i].GetComponent<SalinityPointInfo>().visibilityAlpha;
+                }
+                
+                allUnitSalinityDivisions[i].GetComponent<Renderer>().material.color = tempColor;
+            }
+
+        }
+        else
+        {
+            return;
+        }
 
     }
 

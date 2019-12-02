@@ -12,6 +12,7 @@ TagManager:
   - dontmove
   - listlast
   - water
+  - salinity
   layers:
   - Default
   - TransparentFX
