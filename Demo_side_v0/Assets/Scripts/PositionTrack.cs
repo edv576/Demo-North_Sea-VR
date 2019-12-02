@@ -9,6 +9,7 @@ public class PositionTrack : MonoBehaviour
     public BoxCollider seaCollider = null;
     public RectTransform panelTransform = null;
     public GameObject positionPoint = null;
+    public GameObject mainCamera;
 
     Mesh mesh;
 
@@ -120,6 +121,9 @@ public class PositionTrack : MonoBehaviour
         if (!OutOfBounds(player.transform.position))
         {
             positionPoint.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, positionPoint.transform.localPosition.z);
+            positionPoint.transform.eulerAngles = new Vector3(positionPoint.transform.eulerAngles.x, positionPoint.transform.eulerAngles.y,
+                mainCamera.transform.eulerAngles.y);
+
 
         }
 

@@ -114,7 +114,7 @@ public class UserMovement_VIVE : MonoBehaviour {
 
 
 
-        if (clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
+        if ((clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y < 0))
         {
             if (IsInLimits())
             {
@@ -127,6 +127,32 @@ public class UserMovement_VIVE : MonoBehaviour {
 
         }
 
+        if (Input.GetKey(KeyCode.W))
+        {
+            if (IsInLimits())
+            {
+                playerObject.transform.position += GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 80.0f;
+            }
+            else
+            {
+                playerObject.transform.position -= GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 1000.0f;
+            }
+        }
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            if (IsInLimits())
+            {
+                playerObject.transform.position += GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 30.0f;
+            }
+            else
+            {
+                playerObject.transform.position -= GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 1000.0f;
+            }
+        }
+
+
+
         if (IsNotColliding)
         {
             if (!gameManager.GetComponent<TimeChange>().isVisibilityMode && transform.position.y < waterlevel)
@@ -136,6 +162,10 @@ public class UserMovement_VIVE : MonoBehaviour {
             else if (transform.position.y > waterlevel)
             {
                 gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
+            }
+            else if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
+            {
+                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
             }
 
         }
