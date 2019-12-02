@@ -7,6 +7,8 @@ public class UserMovement_VIVE : MonoBehaviour {
 
     public GameObject directionController;
     public GameObject playerObject;
+    public GameObject gameManager;
+    public GameObject waterObject;
 
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
@@ -14,6 +16,9 @@ public class UserMovement_VIVE : MonoBehaviour {
     public SteamVR_Input_Sources handtype;
     BoxCollider limitCollider;
     private int collisionCount;
+    private bool isBeginning;
+
+    float waterlevel;
 
 
     public GameObject seaBed;
@@ -46,33 +51,51 @@ public class UserMovement_VIVE : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        if(col.gameObject.tag == "salinity")
-        {
-            collisionCount++;
-        }
+        //if (!isBeginning)
+        //{
+            print("Collision detected");
+            if (col.gameObject.tag == "salinity")
+            {
+                collisionCount++;
+            }
+            print(collisionCount);
+        //}
+        
         
 
     }
 
     void OnCollisionExit(Collision col)
     {
-        if (col.gameObject.tag == "salinity")
-        {
-            collisionCount--;
-        }
+        //if (!isBeginning)
+        //{
+            if (col.gameObject.tag == "salinity")
+            {
+                collisionCount--;
+            }
+        //}
+        
     }
 
     // Use this for initialization
     void Start () {
 
         limitCollider = seaBed.GetComponent<BoxCollider>();
+        collisionCount = 0;
+        isBeginning = true;
+        waterlevel = waterObject.GetComponent<BoxCollider>().bounds.max.y;
 
 
-   
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        //if(isBeginning)
+        //{
+        //    //collisionCount = 0;
+        //    isBeginning = false;
+        //}
 
 
         if (clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
@@ -100,15 +123,39 @@ public class UserMovement_VIVE : MonoBehaviour {
             else
             {
                 playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
-            }
-
-            
+            }           
 
         }
 
-  
-   
-       
+        if (IsNotColliding)
+        {
+            if (!gameManager.GetComponent<TimeChange>().isVisibilityMode && transform.position.y < waterlevel)
+            {
+                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
+            }
+            else if (transform.position.y > waterlevel)
+            {
+                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
+            }
+
+        }
+        else
+        {
+            if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
+            {
+                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
+            }
+        }
+
+
+
+        print(collisionCount);
+
+
+
+
+
+
 
 
 

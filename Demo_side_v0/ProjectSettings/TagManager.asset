@@ -13,6 +13,7 @@ TagManager:
   - listlast
   - water
   - salinity
+  - interest_point
   layers:
   - Default
   - TransparentFX

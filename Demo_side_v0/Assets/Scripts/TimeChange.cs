@@ -56,6 +56,7 @@ public class TimeChange : MonoBehaviour {
     public int visibilityAlpha;
     public float limitUpFreshWaterValue;
     public float limitDownFreshWaterValue;
+    public bool isVisibilityMode;
     List<GameObject> allUnitSalinityDivisions;
     List<GameObject> listFishSchools;
     Vector3 initialPlayerPosition;
@@ -539,7 +540,7 @@ public class TimeChange : MonoBehaviour {
 
     }
 
-    void ChangeColorSalinityPoints(int typeChange)
+    public void ChangeColorSalinityPoints(int typeChange)
     {
         if((typeChange == 1) || (typeChange == 2) || (allFreshSalinityPoints.Count > 0))
         {
@@ -553,10 +554,12 @@ public class TimeChange : MonoBehaviour {
                 if(typeChange == 1)
                 {
                     tempColor.a = allUnitSalinityDivisions[i].GetComponent<SalinityPointInfo>().originalAlpha;
+                    isVisibilityMode = false;
                 }
                 else
                 {
                     tempColor.a = allUnitSalinityDivisions[i].GetComponent<SalinityPointInfo>().visibilityAlpha;
+                    isVisibilityMode = true;
                 }
                 
                 allUnitSalinityDivisions[i].GetComponent<Renderer>().material.color = tempColor;
