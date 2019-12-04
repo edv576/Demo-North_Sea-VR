@@ -122,7 +122,7 @@ public class PositionTrack : MonoBehaviour
         {
             positionPoint.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, positionPoint.transform.localPosition.z);
             positionPoint.transform.eulerAngles = new Vector3(positionPoint.transform.eulerAngles.x, positionPoint.transform.eulerAngles.y,
-                mainCamera.transform.eulerAngles.y);
+                -mainCamera.transform.eulerAngles.y + 90);
 
 
         }

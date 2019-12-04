@@ -17,19 +17,27 @@ public class PositionTrackCollision : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "interest_point")
-        {
-            other.gameObject.GetComponent<Renderer>().material = GetComponent<Renderer>().material;
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.gameObject.tag == "interest_point")
+    //    {
+    //        other.gameObject.GetComponent<Renderer>().material = GetComponent<Renderer>().material;
+    //    }
+    //}
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "interest_point")
         {
             other.gameObject.GetComponent<Renderer>().material = targetPointMaterial;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "interest_point" && (other.gameObject.GetComponent<Renderer>().material != GetComponent<Renderer>().material))
+        {
+            other.gameObject.GetComponent<Renderer>().material = GetComponent<Renderer>().material;
         }
     }
 
