@@ -40,7 +40,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0)
+        if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             
             if(nActualSeaBed > 0)
@@ -53,7 +53,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 
         }
 
-        if (clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
+        if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (nActualSeaBed < seaBeds.Length - 1)
             {

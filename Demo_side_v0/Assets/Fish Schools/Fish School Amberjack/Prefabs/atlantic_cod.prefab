@@ -299,8 +299,8 @@ Animation:
   - {fileID: 1827226128182048838, guid: 6c09bbe02453d4a4b900e3582c9789fc, type: 3}
   m_WrapMode: 0
   m_PlayAutomatically: 1
-  m_AnimatePhysics: 1
-  m_CullingType: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 1
 --- !u!1 &4016019655337967241
 GameObject:
   m_ObjectHideFlags: 0
