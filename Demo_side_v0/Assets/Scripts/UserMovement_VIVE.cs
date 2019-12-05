@@ -153,29 +153,29 @@ public class UserMovement_VIVE : MonoBehaviour {
 
 
 
-        if (IsNotColliding)
-        {
-            if (!gameManager.GetComponent<TimeChange>().isVisibilityMode && transform.position.y < waterlevel)
-            {
-                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
-            }
-            else if (transform.position.y > waterlevel)
-            {
-                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
-            }
-            else if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
-            {
-                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
-            }
+        //if (IsNotColliding)
+        //{
+        //    if (!gameManager.GetComponent<TimeChange>().isVisibilityMode && transform.position.y < waterlevel)
+        //    {
+        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
+        //    }
+        //    else if (transform.position.y > waterlevel)
+        //    {
+        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
+        //    }
+        //    else if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
+        //    {
+        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
+        //    }
 
-        }
-        else
-        {
-            if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
-            {
-                gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
-            }
-        }
+        //}
+        //else
+        //{
+        //    if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
+        //    {
+        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
+        //    }
+        //}
 
 
 
