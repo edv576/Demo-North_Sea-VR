@@ -1,0 +1,6 @@
+Use cubes instead of spheres for representing salinity points. Augment data with means in between.
+Change color of seafloor.
+Limit the height
+Fix the limit map bug
+Put a coast
+
