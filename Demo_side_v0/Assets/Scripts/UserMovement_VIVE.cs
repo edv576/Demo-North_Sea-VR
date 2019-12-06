@@ -9,6 +9,7 @@ public class UserMovement_VIVE : MonoBehaviour {
     public GameObject playerObject;
     public GameObject gameManager;
     public GameObject waterObject;
+    public GameObject cage;
 
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
@@ -40,7 +41,7 @@ public class UserMovement_VIVE : MonoBehaviour {
     {
         if(playerObject.transform.position.x > limitCollider.bounds.min.x && playerObject.transform.position.x < limitCollider.bounds.max.x &&
             playerObject.transform.position.z > limitCollider.bounds.min.z && playerObject.transform.position.z < limitCollider.bounds.max.z &&
-            playerObject.transform.position.y > limitCollider.bounds.min.y)
+            playerObject.transform.position.y > limitCollider.bounds.min.y && playerObject.transform.position.y < limitCollider.bounds.max.y)
         {
             return true;
         }
@@ -51,18 +52,31 @@ public class UserMovement_VIVE : MonoBehaviour {
 
     }
 
+    void SetCageVisible(bool status)
+    {
+        var meshRenderers = cage.GetComponentsInChildren<MeshRenderer>();
+        for(int i = 0; i < meshRenderers.Length; i++)
+        {
+            meshRenderers[i].enabled = status;
+        }
+    }
+
     void OnCollisionEnter(Collision col)
     {
         //if (!isBeginning)
         //{
-            print("Collision detected");
-            if (col.gameObject.tag == "salinity")
-            {
-                collisionCount++;
-            }
-            print(collisionCount);
+            //print("Collision detected");
+            //if (col.gameObject.tag == "salinity")
+            //{
+            //    collisionCount++;
+            //}
+            //print(collisionCount);
         //}
-        
+        if(col.gameObject.tag == "cage")
+        {
+            SetCageVisible(true);
+            print("Collision with cage detected");
+        }
         
 
     }
@@ -71,12 +85,17 @@ public class UserMovement_VIVE : MonoBehaviour {
     {
         //if (!isBeginning)
         //{
-            if (col.gameObject.tag == "salinity")
-            {
-                collisionCount--;
-            }
+            //if (col.gameObject.tag == "salinity")
+            //{
+            //    collisionCount--;
+            //}
         //}
-        
+
+        if (col.gameObject.tag == "cage")
+        {
+            SetCageVisible(false);
+        }
+
     }
 
     // Use this for initialization
@@ -104,11 +123,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                //cage.SetActive(false);
                 previousPosition = playerObject.transform.position;
                 playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 80.0f;
             }
             else
             {
+                //cage.SetActive(true);
                 playerObject.transform.position = previousPosition;
                 //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
@@ -122,11 +143,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                //cage.SetActive(false);
                 previousPosition = playerObject.transform.position;
                 playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 30.0f;
             }
             else
             {
+                //cage.SetActive(true);
                 playerObject.transform.position = previousPosition;
                 //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }           
@@ -137,11 +160,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                //cage.SetActive(false);
                 previousPosition = playerObject.transform.position;
                 playerObject.transform.position += GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 80.0f;
             }
             else
             {
+                //cage.SetActive(true);
                 playerObject.transform.position = previousPosition;
                 //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
@@ -151,11 +176,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                cage.SetActive(false);
                 previousPosition = playerObject.transform.position;
                 playerObject.transform.position += GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 30.0f;
             }
             else
             {
+                cage.SetActive(true);
                 playerObject.transform.position = previousPosition;
                 //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
@@ -189,7 +216,7 @@ public class UserMovement_VIVE : MonoBehaviour {
 
 
 
-        print(collisionCount);
+        //print(collisionCount);
 
 
 
