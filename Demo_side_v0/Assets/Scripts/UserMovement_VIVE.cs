@@ -17,6 +17,7 @@ public class UserMovement_VIVE : MonoBehaviour {
     BoxCollider limitCollider;
     private int collisionCount;
     private bool isBeginning;
+    private Vector3 previousPosition;
 
     float waterlevel;
 
@@ -38,7 +39,8 @@ public class UserMovement_VIVE : MonoBehaviour {
     bool IsInLimits()
     {
         if(playerObject.transform.position.x > limitCollider.bounds.min.x && playerObject.transform.position.x < limitCollider.bounds.max.x &&
-            playerObject.transform.position.z > limitCollider.bounds.min.z && playerObject.transform.position.z < limitCollider.bounds.max.z)
+            playerObject.transform.position.z > limitCollider.bounds.min.z && playerObject.transform.position.z < limitCollider.bounds.max.z &&
+            playerObject.transform.position.y > limitCollider.bounds.min.y)
         {
             return true;
         }
@@ -84,7 +86,7 @@ public class UserMovement_VIVE : MonoBehaviour {
         collisionCount = 0;
         isBeginning = true;
         waterlevel = waterObject.GetComponent<BoxCollider>().bounds.max.y;
-
+        previousPosition = playerObject.transform.position;
 
     }
 	
@@ -102,11 +104,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                previousPosition = playerObject.transform.position;
                 playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 80.0f;
             }
             else
             {
-                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
+                playerObject.transform.position = previousPosition;
+                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
             
             
@@ -118,11 +122,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                previousPosition = playerObject.transform.position;
                 playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 30.0f;
             }
             else
             {
-                playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
+                playerObject.transform.position = previousPosition;
+                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }           
 
         }
@@ -131,11 +137,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                previousPosition = playerObject.transform.position;
                 playerObject.transform.position += GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 80.0f;
             }
             else
             {
-                playerObject.transform.position -= GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 1000.0f;
+                playerObject.transform.position = previousPosition;
+                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
         }
 
@@ -143,11 +151,13 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
+                previousPosition = playerObject.transform.position;
                 playerObject.transform.position += GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 30.0f;
             }
             else
             {
-                playerObject.transform.position -= GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 1000.0f;
+                playerObject.transform.position = previousPosition;
+                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
             }
         }
 
