@@ -10,7 +10,8 @@ public class SeaBedChange_VIVE : MonoBehaviour {
     int nActualSeaBed;
     public GameObject seaBed;
     public int initialYear;
-    Text dataTimeText;
+    public Text dataTimeTextVR;
+    public Text dataTimeTextFS;
     Text dataCoordinatesText;
     public GameObject userObject;
 
@@ -23,15 +24,16 @@ public class SeaBedChange_VIVE : MonoBehaviour {
     void Start () {
 
         nActualSeaBed = 0;
-        dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
+        //dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
         //dataCoordinatesText = GameObject.Find("Data Coordinates Text").GetComponent<Text>();
         //userObject = GameObject.Find("OVRPlayerController");
-        dataTimeText.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
+        dataTimeTextVR.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
+        dataTimeTextFS.text = "Year: " + (nActualSeaBed * 2 + initialYear).ToString();
         //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x,2).ToString() + ", " +
         //    System.Math.Round(userObject.transform.position.y, 2) + ", " +
         //    System.Math.Round(userObject.transform.position.z, 2);
 
-        
+
 
 
 
@@ -47,8 +49,8 @@ public class SeaBedChange_VIVE : MonoBehaviour {
             {
                 nActualSeaBed--;
                 seaBed.GetComponent<MeshFilter>().mesh = seaBeds[nActualSeaBed];
-                dataTimeText.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
-                
+                dataTimeTextVR.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
+                dataTimeTextFS.text = "Year: " + (nActualSeaBed * 2 + initialYear).ToString();
             }
 
         }
@@ -59,8 +61,8 @@ public class SeaBedChange_VIVE : MonoBehaviour {
             {
                 nActualSeaBed++;
                 seaBed.GetComponent<MeshFilter>().mesh = seaBeds[nActualSeaBed];
-                dataTimeText.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
-
+                dataTimeTextVR.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
+                dataTimeTextFS.text = "Year: " + (nActualSeaBed * 2 + initialYear).ToString();
             }
 
         }

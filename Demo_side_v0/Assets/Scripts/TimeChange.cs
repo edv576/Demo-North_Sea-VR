@@ -495,7 +495,7 @@ public class TimeChange : MonoBehaviour {
 
                 //cloneUnitySalinityDivision.GetComponent<>
 
-                cloneUnitySalinityDivision.transform.localScale = new Vector3(5.0f, 2.0f, 5.0f) *  15f;
+                cloneUnitySalinityDivision.transform.localScale = new Vector3(5.0f, 2.0f, 10.0f) *  15f;
 
                 Color tempColor = unitSalinityDivision.GetComponent<Renderer>().material.color;
 
@@ -598,11 +598,11 @@ public class TimeChange : MonoBehaviour {
         //p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
         //p2 = new Vector2((float)P2.UTM.Northing, (float)P2.UTM.Easting);
 
-        p1 = new Vector2(54288.3f, 433625f);
-        p2 = new Vector2(58752.3f, 427236f);
+        //p1 = new Vector2(54288.3f, 433625f);
+        //p2 = new Vector2(58752.3f, 427236f);
 
-        p1 = new Vector2(54014f, 434364f);
-        p2 = new Vector2(57126f, 430334f);
+        p1 = new Vector2(53543.941f, 434126.177f);
+        p2 = new Vector2(56605.693f, 430291.835f);
 
         Vector2 direction = (p2 - p1).normalized;
 
@@ -611,6 +611,9 @@ public class TimeChange : MonoBehaviour {
 
         p3 = p1 + perpDirection * sideMagnitude;
         p4 = p2 + perpDirection * sideMagnitude;
+
+        float t1 = (p3 - p1).magnitude;
+        float t2 = (p4 - p2).magnitude;
 
 
 
