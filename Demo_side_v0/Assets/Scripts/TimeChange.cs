@@ -58,6 +58,7 @@ public class TimeChange : MonoBehaviour {
     public float limitDownFreshWaterValue;
     public bool isVisibilityMode;
     List<GameObject> allUnitSalinityDivisions;
+    List<GameObject> allUnitSecondarySalinityDivisions;
     List<GameObject> listFishSchools;
     Vector3 initialPlayerPosition;
     Vector3 lastPlayerPosition;
@@ -274,6 +275,16 @@ public class TimeChange : MonoBehaviour {
 
     }
 
+    public void AddSecondarySalinityDivision(GameObject secondarySalinityDivision)
+    {
+        allUnitSecondarySalinityDivisions.Add(secondarySalinityDivision);
+    }
+
+    public int NumberSecondarySalinityDivision()
+    {
+        return allUnitSecondarySalinityDivisions.Count;
+    }
+
     void CreateAllWaterSubdivisions()
     {
         listWaterSubdivisionsXYear = new List<WaterSubdivision[,]>();
@@ -420,9 +431,18 @@ public class TimeChange : MonoBehaviour {
             }
         }
 
-        
+        if (allUnitSecondarySalinityDivisions.Count > 0)
+        {
+            for (int i = 0; i < allUnitSecondarySalinityDivisions.Count; i++)
+            {
+                Destroy(allUnitSecondarySalinityDivisions[i]);
+            }
+        }
+
+
 
         allUnitSalinityDivisions = new List<GameObject>();
+        allUnitSecondarySalinityDivisions = new List<GameObject>();
         allFreshSalinityPoints = new List<double[]>();
         List<DefaultVertex> listConvexHullSalinityV = new List<DefaultVertex>();
         List<DefaultConvexFace<DefaultVertex>> listConvexHullSalinityF = new List<DefaultConvexFace<DefaultVertex>>();
@@ -495,7 +515,7 @@ public class TimeChange : MonoBehaviour {
 
                 //cloneUnitySalinityDivision.GetComponent<>
 
-                cloneUnitySalinityDivision.transform.localScale = new Vector3(5.0f, 2.0f, 10.0f) *  15f;
+                cloneUnitySalinityDivision.transform.localScale = new Vector3(15.0f, 2.0f, 20.0f) *  15f;
 
                 Color tempColor = unitSalinityDivision.GetComponent<Renderer>().material.color;
 
@@ -505,8 +525,10 @@ public class TimeChange : MonoBehaviour {
 
                 cloneUnitySalinityDivision.GetComponent<SalinityPointInfo>().originalAlpha = tempColor.a;
                 cloneUnitySalinityDivision.GetComponent<SalinityPointInfo>().visibilityAlpha = (float)visibilityAlpha / 255;
+                cloneUnitySalinityDivision.GetComponent<SalinityPointInfo>().salinityValue = salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].salinity;
 
                 allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
+                
             }
 
 
@@ -713,6 +735,7 @@ public class TimeChange : MonoBehaviour {
         salinityPointsXYear = new List<SalinityPoint>[yearSamples];
 
         allUnitSalinityDivisions = new List<GameObject>();
+        allUnitSecondarySalinityDivisions = new List<GameObject>();
 
         CreateSalinityDivisions(nActualYear);
 

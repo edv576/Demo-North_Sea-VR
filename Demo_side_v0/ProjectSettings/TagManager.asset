@@ -15,6 +15,7 @@ TagManager:
   - salinity
   - interest_point
   - cage
+  - salinity_secondary
   layers:
   - Default
   - TransparentFX
