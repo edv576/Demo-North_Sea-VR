@@ -79,6 +79,7 @@ public class TimeChange : MonoBehaviour {
     float yPos;
     Vector3 vanishPos;
     List<double[]> allFreshSalinityPoints;
+    bool areSalinityPointsVisible;
 
     
 
@@ -449,24 +450,24 @@ public class TimeChange : MonoBehaviour {
 
         Algorithms alg = new Algorithms();
 
-        for (int i = 0; i < salinityIndexesXYearMixUlimit[indexYear].Count; i++)
-        {
-            Vector2 realPoint = new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].x, salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].y);
-            Vector2 VRPoint = ConvertRealtoVR(realPoint);
+        //for (int i = 0; i < salinityIndexesXYearMixUlimit[indexYear].Count; i++)
+        //{
+        //    Vector2 realPoint = new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].x, salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].y);
+        //    Vector2 VRPoint = ConvertRealtoVR(realPoint);
 
 
 
-            if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
-            {
-                Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
-                    initialDepth - interval * (salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer - 1), VRPoint.y);
+        //    if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
+        //    {
+        //        Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
+        //            initialDepth - interval * (salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer - 1), VRPoint.y);
 
-                double[] VRPoint_h = { unitSalinityDivisionPos.x, unitSalinityDivisionPos.y, unitSalinityDivisionPos.z };
+        //        double[] VRPoint_h = { unitSalinityDivisionPos.x, unitSalinityDivisionPos.y, unitSalinityDivisionPos.z };
 
-                allFreshSalinityPoints.Add(VRPoint_h);
-            }
+        //        allFreshSalinityPoints.Add(VRPoint_h);
+        //    }
 
-        }
+        //}
 
         //Sphere3Generator_NormalizedCube gen = new Sphere3Generator_NormalizedCube() { EdgeVertices = 20 };
         //DMesh3 mesh = gen.Generate().MakeDMesh();
@@ -521,6 +522,8 @@ public class TimeChange : MonoBehaviour {
 
                 tempColor.a = (1 - salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].salinity / limitUpFreshWaterValue) * tempColor.a;
 
+                tempColor.a = (1 - salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].salinity / limitUpFreshWaterValue) * (float)maximumAlpha/255;
+
                 cloneUnitySalinityDivision.GetComponent<Renderer>().material.color = tempColor;
 
                 cloneUnitySalinityDivision.GetComponent<SalinityPointInfo>().originalAlpha = tempColor.a;
@@ -558,6 +561,26 @@ public class TimeChange : MonoBehaviour {
         //}
 
 
+
+
+    }
+
+    void HideSalinityDivisions(bool hide)
+    {
+        if (hide)
+        {
+            for (int i = 0; i < allUnitSalinityDivisions.Count; i++)
+            {
+                allUnitSalinityDivisions[i].SetActive(false);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < allUnitSalinityDivisions.Count; i++)
+            {
+                allUnitSalinityDivisions[i].SetActive(true);
+            }
+        }
 
 
     }
@@ -624,7 +647,7 @@ public class TimeChange : MonoBehaviour {
         //p2 = new Vector2(58752.3f, 427236f);
 
         p1 = new Vector2(53543.941f, 434126.177f);
-        p2 = new Vector2(56605.693f, 430291.835f);
+        p2 = new Vector2(56260.2f, 430603.6f);
 
         Vector2 direction = (p2 - p1).normalized;
 
@@ -738,6 +761,7 @@ public class TimeChange : MonoBehaviour {
         allUnitSecondarySalinityDivisions = new List<GameObject>();
 
         CreateSalinityDivisions(nActualYear);
+        areSalinityPointsVisible = true;
 
         for (int i = 0; i < yearSamples; i++)
         {
@@ -955,6 +979,21 @@ public class TimeChange : MonoBehaviour {
 
             }
             
+        }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            if (areSalinityPointsVisible)
+            {
+                HideSalinityDivisions(true);
+                areSalinityPointsVisible = false;
+
+            }
+            else
+            {
+                HideSalinityDivisions(false);
+                areSalinityPointsVisible = true;
+            }
         }
 
         //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x, 1).ToString() + ", " +

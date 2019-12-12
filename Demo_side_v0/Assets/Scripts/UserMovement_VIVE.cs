@@ -10,6 +10,8 @@ public class UserMovement_VIVE : MonoBehaviour {
     public GameObject gameManager;
     public GameObject waterObject;
     public GameObject cage;
+    public GameObject checkpoint;
+    public GameObject water;
 
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
@@ -19,6 +21,8 @@ public class UserMovement_VIVE : MonoBehaviour {
     private int collisionCount;
     private bool isBeginning;
     private Vector3 previousPosition;
+    bool lastFogCheck;
+    
 
     float waterlevel;
 
@@ -76,6 +80,10 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             SetCageVisible(true);
             print("Collision with cage detected");
+            if(col.gameObject.name == "Cage down")
+            {
+                transform.position = new Vector3(transform.position.x, checkpoint.transform.position.y, transform.position.z);
+            }
         }
         
 
@@ -83,14 +91,6 @@ public class UserMovement_VIVE : MonoBehaviour {
 
     void OnCollisionExit(Collision col)
     {
-        //if (!isBeginning)
-        //{
-            //if (col.gameObject.tag == "salinity")
-            //{
-            //    collisionCount--;
-            //}
-        //}
-
         if (col.gameObject.tag == "cage")
         {
             SetCageVisible(false);
@@ -106,17 +106,12 @@ public class UserMovement_VIVE : MonoBehaviour {
         isBeginning = true;
         waterlevel = waterObject.GetComponent<BoxCollider>().bounds.max.y;
         previousPosition = playerObject.transform.position;
+        lastFogCheck = false;
 
     }
 	
 	// Update is called once per frame
 	void Update () {
-
-        //if(isBeginning)
-        //{
-        //    //collisionCount = 0;
-        //    isBeginning = false;
-        //}
 
 
         if (clickMove.GetState(handtype) && clickAxis.GetLastAxis(handtype).y > 0)
@@ -188,31 +183,30 @@ public class UserMovement_VIVE : MonoBehaviour {
             }
         }
 
+        bool verifyUnderwater = transform.position.y < water.GetComponent<Collider>().bounds.max.y;
+
+        if(verifyUnderwater)
+        {
+            if(verifyUnderwater != lastFogCheck)
+            {
+                GetComponentInChildren<Kino.Fog>().enabled = true;
+            }
+            lastFogCheck = verifyUnderwater;
+
+        }
+        else
+        {
+            if (verifyUnderwater != lastFogCheck)
+            {
+                GetComponentInChildren<Kino.Fog>().enabled = false;
+            }
+            lastFogCheck = verifyUnderwater;
+
+        }
 
 
-        //if (IsNotColliding)
-        //{
-        //    if (!gameManager.GetComponent<TimeChange>().isVisibilityMode && transform.position.y < waterlevel)
-        //    {
-        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
-        //    }
-        //    else if (transform.position.y > waterlevel)
-        //    {
-        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
-        //    }
-        //    else if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
-        //    {
-        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(2);
-        //    }
 
-        //}
-        //else
-        //{
-        //    if (gameManager.GetComponent<TimeChange>().isVisibilityMode)
-        //    {
-        //        gameManager.GetComponent<TimeChange>().ChangeColorSalinityPoints(1);
-        //    }
-        //}
+        
 
 
 

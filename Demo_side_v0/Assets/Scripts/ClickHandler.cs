@@ -7,6 +7,7 @@ public class ClickHandler : MonoBehaviour
     public Material selectedMaterial;
     public Material unselectedMaterial;
     public GameObject player;
+
     public Camera camera;
 
     // Start is called before the first frame update
