@@ -29,7 +29,7 @@ public class ClickHandler : MonoBehaviour
             {
                 if (hit.collider.gameObject.name.Contains("Point of interest"))
                 {
-                    player.transform.position = GetComponent<PositionTrack>().getPositionFromMap(hit.collider.gameObject.transform.localPosition);
+                    player.transform.position = GetComponent<PositionTrack>().GetPositionFromMap(hit.collider.gameObject.transform.localPosition);
 
                 }
                 // handle mouseclick

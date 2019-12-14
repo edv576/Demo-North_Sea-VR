@@ -23,7 +23,7 @@ public class PointerHandler : MonoBehaviour
     {
         if(e.target.name.Contains("Point of interest"))
         {
-            player.transform.position = GetComponent<PositionTrack>().getPositionFromMap(e.target.gameObject.transform.localPosition);
+            player.transform.position = GetComponent<PositionTrack>().GetPositionFromMap(e.target.gameObject.transform.localPosition);
 
 
         }

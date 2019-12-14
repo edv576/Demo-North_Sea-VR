@@ -450,49 +450,7 @@ public class TimeChange : MonoBehaviour {
 
         Algorithms alg = new Algorithms();
 
-        //for (int i = 0; i < salinityIndexesXYearMixUlimit[indexYear].Count; i++)
-        //{
-        //    Vector2 realPoint = new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].x, salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].y);
-        //    Vector2 VRPoint = ConvertRealtoVR(realPoint);
 
-
-
-        //    if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
-        //    {
-        //        Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
-        //            initialDepth - interval * (salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer - 1), VRPoint.y);
-
-        //        double[] VRPoint_h = { unitSalinityDivisionPos.x, unitSalinityDivisionPos.y, unitSalinityDivisionPos.z };
-
-        //        allFreshSalinityPoints.Add(VRPoint_h);
-        //    }
-
-        //}
-
-        //Sphere3Generator_NormalizedCube gen = new Sphere3Generator_NormalizedCube() { EdgeVertices = 20 };
-        //DMesh3 mesh = gen.Generate().MakeDMesh();
-        //MeshNormals.QuickCompute(mesh);
-        //PointAABBTree3 pointBVTree = new PointAABBTree3(mesh, true);
-
-        //DMesh3 pointSet = DMesh3Builder.Build(allFreshSalinityPoints, allFreshSalinityPoints, allFreshSalinityPoints);
-
-        //// estimate point area based on nearest-neighbour distance
-        //double[] areas = new double[pointSet.MaxVertexID];
-        //foreach (int vid in pointSet.VertexIndices())
-        //{
-        //    pointBVTree.PointFilterF = (i) => { return i != vid; };   // otherwise vid is nearest to vid!
-        //    int near_vid = pointBVTree.FindNearestPoint(pointSet.GetVertex(vid));
-        //    double dist = pointSet.GetVertex(vid).Distance(pointSet.GetVertex(near_vid));
-        //    areas[vid] = Circle2d.RadiusArea(dist);
-        //}
-        //pointBVTree.FWNAreaEstimateF = (vid) => {
-        //    return areas[vid];
-        //};
-
-        //var convexHull = ConvexHull.Create(allFreshSalinityPoints);
-
-        //listConvexHullSalinityV = convexHull.Result.Points.ToList();
-        //listConvexHullSalinityF = convexHull.Result.Faces.ToList();
 
         
 
@@ -516,7 +474,7 @@ public class TimeChange : MonoBehaviour {
 
                 //cloneUnitySalinityDivision.GetComponent<>
 
-                cloneUnitySalinityDivision.transform.localScale = new Vector3(15.0f, 2.0f, 20.0f) *  15f;
+                cloneUnitySalinityDivision.transform.localScale = new Vector3(8.0f, 1.5f, 10.0f) *  15f;
 
                 Color tempColor = unitSalinityDivision.GetComponent<Renderer>().material.color;
 
@@ -538,27 +496,7 @@ public class TimeChange : MonoBehaviour {
 
         }
 
-        //for(int i = 0; i < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(0); i++)
-        //{
-        //    for (int j = 0; j < listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear).GetLength(1); j++)
-        //    {
-        //        if (listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j].thereIsData)
-        //        {
-        //            WaterSubdivision waterSubdivision = listWaterSubdivisionsXYear.ElementAt<WaterSubdivision[,]>(indexYear)[i, j];
-        //            Vector3 unitSalinityDivisionPos = new Vector3(waterSubdivision.gradientYf,
-        //                initialDepth - interval * (waterSubdivision.layer - 1), (waterSubdivision.x0 + waterSubdivision.xf) / 2);
-        //            GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
-        //                unitSalinityDivision.transform.rotation);
 
-        //            cloneUnitySalinityDivision.transform.localScale = new Vector3(waterSubdivision.x0 - waterSubdivision.xf,
-        //                waterSubdivision.x0 - waterSubdivision.xf, waterSubdivision.x0 - waterSubdivision.xf)*1f;
-
-        //            allUnitSalinityDivisions.Add(cloneUnitySalinityDivision);
-
-        //        }
-        //    }
-
-        //}
 
 
 
@@ -900,30 +838,30 @@ public class TimeChange : MonoBehaviour {
         //Limits fresh water - seawater
         //< 0.5 - fresh water / 0.5 - 30 brackish water (aka gradient) / > 30 - Seawater
 
-        int waterLayer = GetWaterLayer(playerObject.transform.position.y);
+        //int waterLayer = GetWaterLayer(playerObject.transform.position.y);
 
-        if (playerObject.transform.position != lastPlayerPosition && waterLayer != -1)
-        {
+        //if (playerObject.transform.position != lastPlayerPosition && waterLayer != -1)
+        //{
             
-            for(int i = 0; i < salinityPointsXYear[nActualYear].Count; i++)
-            {
-                if(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).waterLayer == waterLayer)
-                {
-                    Vector2 VRPlayerPosition = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
-                    Vector2 RealPlayerPosition = ConvertVRtoReal(VRPlayerPosition);
+        //    for(int i = 0; i < salinityPointsXYear[nActualYear].Count; i++)
+        //    {
+        //        if(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).waterLayer == waterLayer)
+        //        {
+        //            Vector2 VRPlayerPosition = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
+        //            Vector2 RealPlayerPosition = ConvertVRtoReal(VRPlayerPosition);
 
-                    if ((RealPlayerPosition - new Vector2(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).x, salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).y)).magnitude < 0.01)
-                    {
-
-
-                    }
-
-                }
-
-            }
+        //            if ((RealPlayerPosition - new Vector2(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).x, salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).y)).magnitude < 0.01)
+        //            {
 
 
-        }
+        //            }
+
+        //        }
+
+        //    }
+
+
+        //}
 
         lastPlayerPosition = playerObject.transform.position;
 
@@ -1013,7 +951,7 @@ public class TimeChange : MonoBehaviour {
         Vector2 change;
         Vector2 newPosition;
 
-
+        GetComponent<SeaBedChange_VIVE>().ResetFishMarkers();
 
         for (int i = 0; i < listFishSchools.Count; i++)
         {
@@ -1037,6 +975,8 @@ public class TimeChange : MonoBehaviour {
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
 
                 listFishSchools.ElementAt<GameObject>(i).transform.position = new Vector3(newPosition.x, fishSchool.transform.position.y, newPosition.y);
+
+                GetComponent<SeaBedChange_VIVE>().AddFishMarker()
 
                 for (int j = 0; j < numberFish; j++)
                 {

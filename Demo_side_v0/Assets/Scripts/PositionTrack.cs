@@ -21,11 +21,18 @@ public class PositionTrack : MonoBehaviour
     float mapSideLenghtHalf;
     float panelSideLengthHalf;
 
-    public Vector3 getPositionFromMap(Vector3 positionInMap)
+    public Vector3 GetPositionFromMap(Vector3 positionInMap)
     {
         return new Vector3(positionInMap.y * mapSideLenghtHalf/panelSideLengthHalf, player.transform.position.y, -positionInMap.x * mapSideLenghtHalf/panelSideLengthHalf);
 
     }
+
+    public Vector2 GetPositionInMapFromVR(Vector3 positionInVR)
+    {
+        return new Vector2(-positionInVR.z * panelSideLengthHalf / mapSideLenghtHalf, positionInVR.x * panelSideLengthHalf / mapSideLenghtHalf);
+    }
+
+
 
     Vector2 CWRotation(Vector2 v, float degrees)
     {

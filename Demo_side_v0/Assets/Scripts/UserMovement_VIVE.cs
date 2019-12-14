@@ -69,23 +69,23 @@ public class UserMovement_VIVE : MonoBehaviour {
     {
         //if (!isBeginning)
         //{
-            //print("Collision detected");
-            //if (col.gameObject.tag == "salinity")
-            //{
-            //    collisionCount++;
-            //}
-            //print(collisionCount);
+        //print("Collision detected");
+        //if (col.gameObject.tag == "salinity")
+        //{
+        //    collisionCount++;
         //}
-        if(col.gameObject.tag == "cage")
+        //print(collisionCount);
+        //}
+        if (col.gameObject.tag == "cage")
         {
             SetCageVisible(true);
             print("Collision with cage detected");
-            if(col.gameObject.name == "Cage down")
+            if (col.gameObject.name == "Cage down")
             {
                 transform.position = new Vector3(transform.position.x, checkpoint.transform.position.y, transform.position.z);
             }
         }
-        
+
 
     }
 
