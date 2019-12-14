@@ -976,7 +976,7 @@ public class TimeChange : MonoBehaviour {
 
                 listFishSchools.ElementAt<GameObject>(i).transform.position = new Vector3(newPosition.x, fishSchool.transform.position.y, newPosition.y);
 
-                GetComponent<SeaBedChange_VIVE>().AddFishMarker()
+                GetComponent<SeaBedChange_VIVE>().AddFishMarker(GetComponent<PositionTrack>().GetPositionInMapFromVR(listFishSchools.ElementAt<GameObject>(i).transform.position));
 
                 for (int j = 0; j < numberFish; j++)
                 {

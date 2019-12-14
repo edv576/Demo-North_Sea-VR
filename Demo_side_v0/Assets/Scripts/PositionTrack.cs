@@ -8,7 +8,8 @@ public class PositionTrack : MonoBehaviour
     public GameObject player;
     public BoxCollider seaCollider = null;
     public RectTransform panelTransform = null;
-    public GameObject positionPoint = null;
+    public GameObject positionPointVR;
+    public GameObject positionPointFS;
     public GameObject mainCamera;
 
     Mesh mesh;
@@ -17,6 +18,9 @@ public class PositionTrack : MonoBehaviour
     float minX = 50000;
     float maxY = -50000;
     float minY = 50000;
+
+    float VR_Z;
+    float FS_Z;
 
     float mapSideLenghtHalf;
     float panelSideLengthHalf;
@@ -29,7 +33,8 @@ public class PositionTrack : MonoBehaviour
 
     public Vector2 GetPositionInMapFromVR(Vector3 positionInVR)
     {
-        return new Vector2(-positionInVR.z * panelSideLengthHalf / mapSideLenghtHalf, positionInVR.x * panelSideLengthHalf / mapSideLenghtHalf);
+        Vector2 t = new Vector2(-positionInVR.z * panelSideLengthHalf / mapSideLenghtHalf, positionInVR.x * panelSideLengthHalf / mapSideLenghtHalf);
+        return t;
     }
 
 
@@ -57,7 +62,11 @@ public class PositionTrack : MonoBehaviour
 
     private void Awake()
     {
-
+        mapSideLenghtHalf = Mathf.Abs(seaCollider.bounds.min.x);
+        double test = seaCollider.bounds.min.z;
+        panelSideLengthHalf = panelTransform.rect.width / 2;
+        
+        
 
     }
 
@@ -70,13 +79,20 @@ public class PositionTrack : MonoBehaviour
         double test = seaCollider.bounds.min.z;
         panelSideLengthHalf = panelTransform.rect.width/2;
 
+        VR_Z = positionPointVR.transform.localPosition.z;
+        FS_Z = positionPointFS.transform.localPosition.z;
+
         //Putting the position point in the correct place in the map
-        positionPoint.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, positionPoint.transform.localPosition.z);
+        positionPointVR.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, VR_Z);
+        positionPointFS.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, FS_Z);
 
         float factor = 100000f;
 
         Vector2 p1 = new Vector2(3.92442f, 51.88204f);
         Vector2 p2 = new Vector2(3.99102f, 51.82542f);
+
+        p1 = new Vector2(53543.941f, 434126.177f);
+        p2 = new Vector2(56260.2f, 430603.6f);
 
         Vector2 direction = (p2 - p1).normalized;
 
@@ -127,11 +143,13 @@ public class PositionTrack : MonoBehaviour
         //If the user is not out of bounds of the seafloor, update the position in the map
         if (!OutOfBounds(player.transform.position))
         {
-            positionPoint.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, positionPoint.transform.localPosition.z);
-            positionPoint.transform.eulerAngles = new Vector3(positionPoint.transform.eulerAngles.x, positionPoint.transform.eulerAngles.y,
+            positionPointVR.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, VR_Z);
+            positionPointVR.transform.eulerAngles = new Vector3(positionPointVR.transform.eulerAngles.x, positionPointVR.transform.eulerAngles.y,
                 -mainCamera.transform.eulerAngles.y + 90);
 
-
+            positionPointFS.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, FS_Z);
+            positionPointFS.transform.eulerAngles = new Vector3(positionPointFS.transform.eulerAngles.x, positionPointFS.transform.eulerAngles.y,
+                -mainCamera.transform.eulerAngles.y + 90);
         }
 
 

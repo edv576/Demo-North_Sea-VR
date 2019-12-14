@@ -21,6 +21,8 @@ public class SeaBedChange_VIVE : MonoBehaviour {
     public GameObject fishMarkerFS;
     private List<GameObject> fishMarkersVR;
     private List<GameObject> fishMarkersFS;
+    public GameObject dataDisplayVR;
+    public GameObject dataDisplayFS;
 
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
@@ -46,13 +48,33 @@ public class SeaBedChange_VIVE : MonoBehaviour {
     public void AddFishMarker(Vector2 posFishInMap)
     {
 
-        GameObject newFishMarkerVR = Instantiate(fishMarkerVR, new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerVR.transform.localPosition.z), 
-            fishMarkerVR.transform.rotation);
-        GameObject newFishMarkerFS = Instantiate(fishMarkerFS, new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerFS.transform.localPosition.z),
-            fishMarkerFS.transform.rotation);
+        GameObject newFishMarkerVR = Instantiate(fishMarkerVR, fishMarkerVR.transform.position, fishMarkerVR.transform.rotation);
+        GameObject newFishMarkerFS = Instantiate(fishMarkerFS, fishMarkerFS.transform.position, fishMarkerFS.transform.rotation);
+
+        newFishMarkerVR.SetActive(true);
+        newFishMarkerFS.SetActive(true);
+
+        newFishMarkerVR.transform.SetParent(dataDisplayVR.transform);
+        newFishMarkerVR.transform.localScale = fishMarkerVR.transform.localScale;
+        newFishMarkerFS.transform.SetParent(dataDisplayFS.transform);
+        newFishMarkerFS.transform.localScale = fishMarkerFS.transform.localScale;
+
+        newFishMarkerVR.transform.localPosition = new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerVR.transform.localPosition.z);
+        newFishMarkerFS.transform.localPosition = new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerFS.transform.localPosition.z);
+
+        //newFishMarkerVR = Instantiate(fishMarkerVR, new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerVR.transform.localPosition.z), 
+        //    fishMarkerVR.transform.rotation);
+        //GameObject newFishMarkerFS = Instantiate(fishMarkerFS, new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerFS.transform.localPosition.z),
+        //    fishMarkerFS.transform.rotation);
 
         fishMarkersVR.Add(newFishMarkerVR);
         fishMarkersFS.Add(newFishMarkerFS);
+    }
+
+    private void Awake()
+    {
+        fishMarkersVR = new List<GameObject>();
+        fishMarkersFS = new List<GameObject>();
     }
 
     // Use this for initialization
@@ -64,8 +86,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
         //userObject = GameObject.Find("OVRPlayerController");
         dataTimeTextVR.text = "Year: " + (nActualSeaBed*2 + initialYear).ToString();
         dataTimeTextFS.text = "Year: " + (nActualSeaBed * 2 + initialYear).ToString();
-        fishMarkersVR = new List<GameObject>();
-        fishMarkersFS = new List<GameObject>();
+        
         //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x,2).ToString() + ", " +
         //    System.Math.Round(userObject.transform.position.y, 2) + ", " +
         //    System.Math.Round(userObject.transform.position.z, 2);
