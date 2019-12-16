@@ -10,7 +10,7 @@ public class PositionTrack : MonoBehaviour
     public RectTransform panelTransform = null;
     public GameObject positionPointVR;
     public GameObject positionPointFS;
-    public GameObject mainCamera;
+    public GameObject directionObject;
 
     Mesh mesh;
 
@@ -145,11 +145,12 @@ public class PositionTrack : MonoBehaviour
         {
             positionPointVR.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, VR_Z);
             positionPointVR.transform.eulerAngles = new Vector3(positionPointVR.transform.eulerAngles.x, positionPointVR.transform.eulerAngles.y,
-                -mainCamera.transform.eulerAngles.y + 90);
+                -directionObject.transform.eulerAngles.y + 90);
 
             positionPointFS.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, FS_Z);
             positionPointFS.transform.eulerAngles = new Vector3(positionPointFS.transform.eulerAngles.x, positionPointFS.transform.eulerAngles.y,
-                -mainCamera.transform.eulerAngles.y + 90);
+                -directionObject.transform.eulerAngles.y + 90);
+
         }
 
 
