@@ -32,5 +32,13 @@ namespace Valve.VR
                 return SteamVR_Actions.movementSet_ClickAxis;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean ClickGrip
+        {
+            get
+            {
+                return SteamVR_Actions.movementSet_ClickGrip;
+            }
+        }
     }
 }

@@ -104,6 +104,7 @@ public class TimeChange : MonoBehaviour {
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
     public SteamVR_Action_Vector2 clickAxis;
+    public SteamVR_Action_Boolean clickGrip;
     public SteamVR_Input_Sources handtype;
 
     public Vector2 RotateVector(Vector2 v, float angle)
@@ -869,8 +870,7 @@ public class TimeChange : MonoBehaviour {
         
         //if (OVRInput.GetUp(OVRInput.Button.Three) || Input.GetKeyDown(KeyCode.DownArrow))
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            
+        {           
             if(nActualYear > 0)
             {
 
@@ -883,6 +883,17 @@ public class TimeChange : MonoBehaviour {
                 print(nActualYear * 2 + startYear);
 
                 CreateSalinityDivisions(nActualYear);
+
+                if (areSalinityPointsVisible)
+                {
+                    HideSalinityDivisions(false);
+
+                }
+                else
+                {
+                    HideSalinityDivisions(true);
+   
+                }
 
                 StartCoroutine("WaitRespawn");
 
@@ -910,6 +921,18 @@ public class TimeChange : MonoBehaviour {
 
                 CreateSalinityDivisions(nActualYear);
 
+                if (areSalinityPointsVisible)
+                {
+                    HideSalinityDivisions(false);
+          
+
+                }
+                else
+                {
+                    HideSalinityDivisions(true);
+                  
+                }
+
                 StartCoroutine("WaitRespawn");
 
                 //fishSchool.GetComponent<SchoolController>()._childAmount = 63;
@@ -919,7 +942,7 @@ public class TimeChange : MonoBehaviour {
             
         }
 
-        if (Input.GetKeyDown(KeyCode.N))
+        if (Input.GetKeyDown(KeyCode.N) || clickGrip.GetLastStateDown(handtype))
         {
             if (areSalinityPointsVisible)
             {
@@ -985,6 +1008,7 @@ public class TimeChange : MonoBehaviour {
                 }
 
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i)*10;
+                //listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i);
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
             }
             else

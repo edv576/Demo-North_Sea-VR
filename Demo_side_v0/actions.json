@@ -80,6 +80,10 @@
     {
       "name": "/actions/MovementSet/in/ClickAxis",
       "type": "vector2"
+    },
+    {
+      "name": "/actions/MovementSet/in/ClickGrip",
+      "type": "boolean"
     }
   ],
   "action_sets": [
