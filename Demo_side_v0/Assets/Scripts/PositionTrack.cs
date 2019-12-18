@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class PositionTrack : MonoBehaviour
 {
@@ -10,7 +11,10 @@ public class PositionTrack : MonoBehaviour
     public RectTransform panelTransform = null;
     public GameObject positionPointVR;
     public GameObject positionPointFS;
-    public GameObject directionObject;
+    public GameObject directionObject1;
+    public GameObject directionObject2;
+    GameObject actualDirectionObject;
+
 
     Mesh mesh;
 
@@ -117,6 +121,15 @@ public class PositionTrack : MonoBehaviour
         //print(rotDirection.x.ToString());
         //print(rotDirection.y.ToString());
         //rotPerpDirection.Normalize();
+
+        if (XRDevice.isPresent)
+        {
+            actualDirectionObject = directionObject1;
+        }
+        else
+        {
+            actualDirectionObject = directionObject2;
+        }
     }
 
     //This function determines if the user is out of bounds of the seafloor or not
@@ -145,11 +158,11 @@ public class PositionTrack : MonoBehaviour
         {
             positionPointVR.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, VR_Z);
             positionPointVR.transform.eulerAngles = new Vector3(positionPointVR.transform.eulerAngles.x, positionPointVR.transform.eulerAngles.y,
-                -directionObject.transform.eulerAngles.y + 90);
+                -actualDirectionObject.transform.eulerAngles.y + 90);
 
             positionPointFS.transform.localPosition = new Vector3(-player.transform.position.z * panelSideLengthHalf / mapSideLenghtHalf, player.transform.position.x * panelSideLengthHalf / mapSideLenghtHalf, FS_Z);
             positionPointFS.transform.eulerAngles = new Vector3(positionPointFS.transform.eulerAngles.x, positionPointFS.transform.eulerAngles.y,
-                -directionObject.transform.eulerAngles.y + 90);
+                -actualDirectionObject.transform.eulerAngles.y + 90);
 
         }
 

@@ -70,6 +70,7 @@ public class TimeChange : MonoBehaviour {
     public int yearSamples = 5;
     public int startYear = 2005;
     public int yearStep = 2;
+    public int[] years;
     List<Vector2>[] fishPositionsXYear;
     List<int>[] fishNumberXYearInPos;
     List<SalinityPoint>[] salinityPointsXYear;
@@ -296,7 +297,7 @@ public class TimeChange : MonoBehaviour {
 
         
 
-        for (int i = 0; i < yearSamples; i++)
+        for (int i = 0; i < years.Length; i++)
         {
             WaterSubdivision[,] waterSubdivisionsXLayer = new WaterSubdivision[numberWaterLayers, subdivisions];
 
@@ -562,7 +563,7 @@ public class TimeChange : MonoBehaviour {
 
         nActualYear = 0;
         dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
-        dataTimeText.text = "Year: " + (nActualYear*2 + 2005).ToString();
+        dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
         initialPlayerPosition = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y,
             playerObject.transform.position.z);
 
@@ -692,9 +693,9 @@ public class TimeChange : MonoBehaviour {
 
       
 
-        CreateAllWaterSubdivisions();
+        //CreateAllWaterSubdivisions();
 
-        salinityPointsXYear = new List<SalinityPoint>[yearSamples];
+        salinityPointsXYear = new List<SalinityPoint>[years.Length];
 
         allUnitSalinityDivisions = new List<GameObject>();
         allUnitSecondarySalinityDivisions = new List<GameObject>();
@@ -702,7 +703,7 @@ public class TimeChange : MonoBehaviour {
         CreateSalinityDivisions(nActualYear);
         areSalinityPointsVisible = true;
 
-        for (int i = 0; i < yearSamples; i++)
+        for (int i = 0; i < years.Length; i++)
         {
             List<SalinityPoint> dummySalinityPoints = new List<SalinityPoint>();
 
@@ -710,7 +711,7 @@ public class TimeChange : MonoBehaviour {
 
             for(int j = 0;j< salinityPoints.Length; j++)
             {
-                if(i * 2 + startYear == salinityPoints[j].year)
+                if(years[i] == salinityPoints[j].year)
                 {
                     dummySalinityPoints.Add(salinityPoints[j]);
                 }
@@ -725,10 +726,10 @@ public class TimeChange : MonoBehaviour {
 
         Algorithms alg = new Algorithms();
 
-        fishPositionsXYear = new List<Vector2>[yearSamples];
-        fishNumberXYearInPos = new List<int>[yearSamples];
+        fishPositionsXYear = new List<Vector2>[years.Length];
+        fishNumberXYearInPos = new List<int>[years.Length];
 
-        for(int i = 0; i < yearSamples; i++)
+        for(int i = 0; i < years.Length; i++)
         {
             List<Vector2> listFishPos = new List<Vector2>();
             List<int> listFishNumberInPos = new List<int>();
@@ -747,7 +748,7 @@ public class TimeChange : MonoBehaviour {
 
                 Vector2 pos = new Vector2((float)x, (float)y);
 
-                int year = startYear + i * yearStep;
+                int year = years[i];
 
                 string yearMonth = "-5-" + year.ToString();
 
@@ -875,12 +876,12 @@ public class TimeChange : MonoBehaviour {
             {
 
                 nActualYear--;
-                dataTimeText.text = "Year: " + (nActualYear*2 + startYear).ToString();
+                dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
                 //playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
-                print(nActualYear * 2 + startYear);
+                print(years[nActualYear]);
 
                 CreateSalinityDivisions(nActualYear);
 
@@ -907,17 +908,17 @@ public class TimeChange : MonoBehaviour {
         //if (OVRInput.GetUp(OVRInput.Button.Four) || Input.GetKeyDown(KeyCode.UpArrow))
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-            if (nActualYear < yearSamples - 1)
+            if (nActualYear < years.Length - 1)
             {
 
 
                 nActualYear++;
-                dataTimeText.text = "Year: " + (nActualYear*2 + startYear).ToString();
+                dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
                 //playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
-                print(nActualYear * 2 + startYear);
+                print(years[nActualYear]);
 
                 CreateSalinityDivisions(nActualYear);
 

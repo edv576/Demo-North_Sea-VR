@@ -13,6 +13,8 @@ using System.Diagnostics;
 public class SalinityPreCalculations : MonoBehaviour
 {
 
+    public int[] years;
+
     public static void Save(List<int>[] list, int number)
     {
   
@@ -78,19 +80,19 @@ public class SalinityPreCalculations : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        List<Dictionary<string, object>> dataSalinity = CSVReader.Read("Data_Salinity");
+        List<Dictionary<string, object>> dataSalinity = CSVReader.Read("alldata2006-2010-2012");
 
 
         SalinityPoint[] salinityPoints = new SalinityPoint[dataSalinity.Count];
-        List<int>[] salinityIndexesXYearMixUlimit = new List<int>[5];
-        List<int>[] salinityIndexesXYearMixDLimit = new List<int>[5];
+        List<int>[] salinityIndexesXYearMixUlimit = new List<int>[years.Length];
+        List<int>[] salinityIndexesXYearMixDLimit = new List<int>[years.Length];
 
         string path = Application.persistentDataPath;
 
         
 
 
-        for (int i = 0;i< 5; i++)
+        for (int i = 0;i< salinityIndexesXYearMixDLimit.Length; i++)
         {
             salinityIndexesXYearMixUlimit[i] = new List<int>();
             salinityIndexesXYearMixDLimit[i] = new List<int>();
@@ -126,7 +128,9 @@ public class SalinityPreCalculations : MonoBehaviour
                     //c = new Coordinate(salinityY, salinityX);
                     //salinityPoints[i].x = (float)c.UTM.Northing;
                     //salinityPoints[i].y = (float)c.UTM.Easting;
-                    salinityIndexesXYearMixDLimit[(salinityPoints[i].year - 2005) / 2].Add(i);
+                    //salinityIndexesXYearMixDLimit[(salinityPoints[i].year - 2005) / 2].Add(i);
+                    salinityIndexesXYearMixDLimit[Array.IndexOf(years, salinityPoints[i].year)].Add(i);
+                    
                 }
 
                 if (salinityPoints[i].salinity <= 10 && salinityPoints[i].year != 0)
@@ -134,7 +138,8 @@ public class SalinityPreCalculations : MonoBehaviour
                     //c = new Coordinate(salinityY, salinityX);
                     //salinityPoints[i].x = (float)c.UTM.Northing;
                     //salinityPoints[i].y = (float)c.UTM.Easting;
-                    salinityIndexesXYearMixUlimit[(salinityPoints[i].year - 2005) / 2].Add(i);
+                    //salinityIndexesXYearMixUlimit[(salinityPoints[i].year - 2005) / 2].Add(i);
+                    salinityIndexesXYearMixUlimit[Array.IndexOf(years, salinityPoints[i].year)].Add(i);
                 }
 
             }
@@ -148,7 +153,7 @@ public class SalinityPreCalculations : MonoBehaviour
 
         int dummyIndex;
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < years.Length; i++)
         {
             for (int j = 0; j < salinityIndexesXYearMixDLimit[i].Count - 1; j++)
             {
@@ -165,7 +170,7 @@ public class SalinityPreCalculations : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < years.Length; i++)
         {
             for (int j = 0; j < salinityIndexesXYearMixUlimit[i].Count - 1; j++)
             {
