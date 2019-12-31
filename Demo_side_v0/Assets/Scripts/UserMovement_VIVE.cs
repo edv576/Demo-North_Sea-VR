@@ -43,10 +43,13 @@ public class UserMovement_VIVE : MonoBehaviour {
 
     bool IsInLimits()
     {
-        if(playerObject.transform.position.x > limitCollider.bounds.min.x && playerObject.transform.position.x < limitCollider.bounds.max.x &&
-            playerObject.transform.position.z > limitCollider.bounds.min.z && playerObject.transform.position.z < limitCollider.bounds.max.z &&
-            playerObject.transform.position.y > limitCollider.bounds.min.y && playerObject.transform.position.y < limitCollider.bounds.max.y)
-        {
+        //if(playerObject.transform.position.x > limitCollider.bounds.min.x && playerObject.transform.position.x < limitCollider.bounds.max.x &&
+        //    playerObject.transform.position.z > limitCollider.bounds.min.z && playerObject.transform.position.z < limitCollider.bounds.max.z &&
+        //    playerObject.transform.position.y > limitCollider.bounds.min.y && playerObject.transform.position.y < limitCollider.bounds.max.y)
+            if (playerObject.transform.position.x > limitCollider.bounds.min.x && playerObject.transform.position.x < limitCollider.bounds.max.x &&
+                playerObject.transform.position.z > limitCollider.bounds.min.z && playerObject.transform.position.z < limitCollider.bounds.max.z &&
+                playerObject.transform.position.y > checkpoint.transform.position.y && playerObject.transform.position.y < limitCollider.bounds.max.y)
+            {
             return true;
         }
         else
@@ -67,15 +70,7 @@ public class UserMovement_VIVE : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        //if (!isBeginning)
-        //{
-        //print("Collision detected");
-        //if (col.gameObject.tag == "salinity")
-        //{
-        //    collisionCount++;
-        //}
-        //print(collisionCount);
-        //}
+
         if (col.gameObject.tag == "cage")
         {
             SetCageVisible(true);
@@ -83,6 +78,7 @@ public class UserMovement_VIVE : MonoBehaviour {
             if (col.gameObject.name == "Cage down")
             {
                 transform.position = new Vector3(transform.position.x, checkpoint.transform.position.y, transform.position.z);
+                //transform.position = new Vector3(transform.position.x, previousPosition.y, transform.position.z);
             }
         }
 
@@ -118,15 +114,15 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
-                //cage.SetActive(false);
+   
                 previousPosition = playerObject.transform.position;
                 playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 80.0f;
             }
             else
             {
-                //cage.SetActive(true);
+     
                 playerObject.transform.position = previousPosition;
-                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
+           
             }
             
             
@@ -138,15 +134,15 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
-                //cage.SetActive(false);
+      
                 previousPosition = playerObject.transform.position;
                 playerObject.transform.position += directionController.transform.forward * Time.deltaTime * 30.0f;
             }
             else
             {
-                //cage.SetActive(true);
+    
                 playerObject.transform.position = previousPosition;
-                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
+          
             }           
 
         }
@@ -155,15 +151,15 @@ public class UserMovement_VIVE : MonoBehaviour {
         {
             if (IsInLimits())
             {
-                //cage.SetActive(false);
+   
                 previousPosition = playerObject.transform.position;
                 playerObject.transform.position += GetComponentInChildren<Camera>().transform.forward * Time.deltaTime * 80.0f;
             }
             else
             {
-                //cage.SetActive(true);
+      
                 playerObject.transform.position = previousPosition;
-                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
+     
             }
         }
 
@@ -179,7 +175,7 @@ public class UserMovement_VIVE : MonoBehaviour {
             {
                 cage.SetActive(true);
                 playerObject.transform.position = previousPosition;
-                //playerObject.transform.position -= directionController.transform.forward * Time.deltaTime * 1000.0f;
+        
             }
         }
 
@@ -210,7 +206,7 @@ public class UserMovement_VIVE : MonoBehaviour {
 
 
 
-        //print(collisionCount);
+   
 
 
 

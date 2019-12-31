@@ -32,7 +32,7 @@ public class ClickHandler : MonoBehaviour
                     player.transform.position = GetComponent<PositionTrack>().GetPositionFromMap(hit.collider.gameObject.transform.localPosition);
 
                 }
-                // handle mouseclick
+       
             }
         }
 

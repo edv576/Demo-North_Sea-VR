@@ -118,9 +118,7 @@ public class PositionTrack : MonoBehaviour
         Vector2 rotDirection = RotateVector(direction, angle);
         Vector2 t = RotateVector(new Vector2(1, 0), 90);
 
-        //print(rotDirection.x.ToString());
-        //print(rotDirection.y.ToString());
-        //rotPerpDirection.Normalize();
+
 
         if (XRDevice.isPresent)
         {

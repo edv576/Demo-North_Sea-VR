@@ -17,13 +17,6 @@ public class PositionTrackCollision : MonoBehaviour
         
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.gameObject.tag == "interest_point")
-    //    {
-    //        other.gameObject.GetComponent<Renderer>().material = GetComponent<Renderer>().material;
-    //    }
-    //}
 
     private void OnTriggerExit(Collider other)
     {
@@ -41,20 +34,6 @@ public class PositionTrackCollision : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        //if(collision.gameObject.tag == "interest_point")
-        //{
-        //    collision.gameObject.GetComponent<Renderer>().material = GetComponent<Renderer>().material;
-        //}
-    }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        //if (collision.gameObject.tag == "interest_point")
-        //{
-        //    collision.gameObject.GetComponent<Renderer>().material = targetPointMaterial;
-        //}
-    }
 
 }

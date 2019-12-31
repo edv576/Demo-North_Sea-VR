@@ -62,10 +62,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
         newFishMarkerVR.transform.localPosition = new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerVR.transform.localPosition.z);
         newFishMarkerFS.transform.localPosition = new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerFS.transform.localPosition.z);
 
-        //newFishMarkerVR = Instantiate(fishMarkerVR, new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerVR.transform.localPosition.z), 
-        //    fishMarkerVR.transform.rotation);
-        //GameObject newFishMarkerFS = Instantiate(fishMarkerFS, new Vector3(posFishInMap.x, posFishInMap.y, fishMarkerFS.transform.localPosition.z),
-        //    fishMarkerFS.transform.rotation);
+
 
         fishMarkersVR.Add(newFishMarkerVR);
         fishMarkersFS.Add(newFishMarkerFS);
@@ -81,16 +78,11 @@ public class SeaBedChange_VIVE : MonoBehaviour {
     void Start () {
 
         nActualSeaBed = 0;
-        //dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
-        //dataCoordinatesText = GameObject.Find("Data Coordinates Text").GetComponent<Text>();
-        //userObject = GameObject.Find("OVRPlayerController");
-        //dataTimeTextVR.text = "Year: " + (initialYear).ToString();
+
         dataTimeTextVR.text = "Year: " + (GetComponent<TimeChange>().years[nActualSeaBed]).ToString();       
         dataTimeTextFS.text = "Year: " + (GetComponent<TimeChange>().years[nActualSeaBed]).ToString();
 
-        //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x,2).ToString() + ", " +
-        //    System.Math.Round(userObject.transform.position.y, 2) + ", " +
-        //    System.Math.Round(userObject.transform.position.z, 2);
+
 
 
 
@@ -130,9 +122,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 
         }
 
-        //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x, 1).ToString() + ", " +
-        //            System.Math.Round(userObject.transform.position.y, 1) + ", " +
-        //            System.Math.Round(userObject.transform.position.z, 1);
+
 
 
 

@@ -95,7 +95,7 @@ public class FishHandler : MonoBehaviour
         VRDiagonalDistance = (upperRight - downLeft).magnitude;
 
         
-        //rotPerpDirection.Normalize();
+  
     }
 
     // Update is called once per frame

@@ -65,7 +65,7 @@ public class TimeChange : MonoBehaviour {
     float xInitialProportion;
     Text dataTimeText;
     Text dataCoordinatesText;
-    //GameObject userObject;
+
     int numberFish = 63;
     public int yearSamples = 5;
     public int startYear = 2005;
@@ -227,9 +227,7 @@ public class TimeChange : MonoBehaviour {
         float rotationAngle;
         Vector2 change;
         Vector2 realPosition;
-        //Vector2 VRPos;
 
-        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
 
         virtualDir = (point - downLeft);
         rotationAngle = Vector2.Angle(Vector2.down, virtualDir.normalized);
@@ -251,9 +249,7 @@ public class TimeChange : MonoBehaviour {
         float rotationAngle;
         Vector2 change;
         Vector2 VRPosition;
-        //Vector2 VRPos;
 
-        //VRPos = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
 
         realDir = (point - p2);
         rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
@@ -465,7 +461,7 @@ public class TimeChange : MonoBehaviour {
 
 
 
-            //if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4) && salinityPoints[salinityIndexesXYearMixUlimit[indexYear][i]].waterLayer == 4)
+        
             if (alg.InAreaOfStudy_4Vertices(realPoint, p1, p2, p3, p4))
                 {
                 Vector3 unitSalinityDivisionPos = new Vector3(VRPoint.x,
@@ -474,7 +470,7 @@ public class TimeChange : MonoBehaviour {
                 GameObject cloneUnitySalinityDivision = Instantiate(unitSalinityDivision, unitSalinityDivisionPos,
                             unitSalinityDivision.transform.rotation);
 
-                //cloneUnitySalinityDivision.GetComponent<>
+
 
                 cloneUnitySalinityDivision.transform.localScale = new Vector3(8.0f, 1.5f, 10.0f) *  15f;
 
@@ -569,22 +565,11 @@ public class TimeChange : MonoBehaviour {
 
         lastPlayerPosition = playerObject.transform.position;
         xInitialProportion = freshWater.transform.localScale.x;
-        //fishSchool.transform.position = fishPositions[nActualYear];
         numberFish = fishSchool.GetComponent<SchoolController>()._childAmount;
 
         listFishSchools = new List<GameObject>();
 
-        //Coordinate P1 = new Coordinate(51.88204, 3.92442);
-        //Coordinate P2 = new Coordinate(51.82542, 3.99102);
 
-
-
-
-        //p1 = new Vector2((float)P1.UTM.Northing, (float)P1.UTM.Easting);
-        //p2 = new Vector2((float)P2.UTM.Northing, (float)P2.UTM.Easting);
-
-        //p1 = new Vector2(54288.3f, 433625f);
-        //p2 = new Vector2(58752.3f, 427236f);
 
         p1 = new Vector2(53543.941f, 434126.177f);
         p2 = new Vector2(56260.2f, 430603.6f);
@@ -663,30 +648,6 @@ public class TimeChange : MonoBehaviour {
         SalinityPreCalculations preCalculations = new SalinityPreCalculations();
 
         salinityPoints = preCalculations.LoadSalinityPoints();
-
-        //List<Dictionary<string, object>> dataSalinity = CSVReader.Read("Data_Salinity");
-
-
-        //salinityPoints = new SalinityPoint[dataSalinity.Count];
-
-        //for(int i = 0; i < dataSalinity.Count; i++)
-        //{
-        //    float n;
-
-        //    if(float.TryParse(dataSalinity[i]["lon"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n))
-        //    {
-        //        salinityPoints[i].x = float.Parse(dataSalinity[i]["lon"].ToString());
-        //        salinityPoints[i].y = float.Parse(dataSalinity[i]["lat"].ToString());
-        //        salinityPoints[i].salinity = float.Parse(dataSalinity[i]["var"].ToString());
-        //        salinityPoints[i].waterLayer = int.Parse(dataSalinity[i]["level"].ToString());
-        //        salinityPoints[i].year = int.Parse(dataSalinity[i]["year"].ToString());
-
-        //    }
-                       
-        //    //print(i);
-        //}
-
-        
 
         salinityIndexesXYearMixDLimit = preCalculations.Load(1);
         salinityIndexesXYearMixUlimit = preCalculations.Load(2);
@@ -837,33 +798,7 @@ public class TimeChange : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        //Limits fresh water - seawater
-        //< 0.5 - fresh water / 0.5 - 30 brackish water (aka gradient) / > 30 - Seawater
 
-        //int waterLayer = GetWaterLayer(playerObject.transform.position.y);
-
-        //if (playerObject.transform.position != lastPlayerPosition && waterLayer != -1)
-        //{
-            
-        //    for(int i = 0; i < salinityPointsXYear[nActualYear].Count; i++)
-        //    {
-        //        if(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).waterLayer == waterLayer)
-        //        {
-        //            Vector2 VRPlayerPosition = new Vector2(playerObject.transform.position.z, playerObject.transform.position.x);
-        //            Vector2 RealPlayerPosition = ConvertVRtoReal(VRPlayerPosition);
-
-        //            if ((RealPlayerPosition - new Vector2(salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).x, salinityPointsXYear[nActualYear].ElementAt<SalinityPoint>(i).y)).magnitude < 0.01)
-        //            {
-
-
-        //            }
-
-        //        }
-
-        //    }
-
-
-        //}
 
         lastPlayerPosition = playerObject.transform.position;
 
@@ -914,7 +849,6 @@ public class TimeChange : MonoBehaviour {
 
                 nActualYear++;
                 dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
-                //playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
@@ -936,8 +870,7 @@ public class TimeChange : MonoBehaviour {
 
                 StartCoroutine("WaitRespawn");
 
-                //fishSchool.GetComponent<SchoolController>()._childAmount = 63;
-                //fishSchool.GetComponent<SchoolController>().AutoRandomWaypointPosition();
+
 
             }
             
@@ -957,10 +890,6 @@ public class TimeChange : MonoBehaviour {
                 areSalinityPointsVisible = true;
             }
         }
-
-        //dataCoordinatesText.text = "Coordinates: " + System.Math.Round(userObject.transform.position.x, 1).ToString() + ", " +
-        //            System.Math.Round(userObject.transform.position.y, 1) + ", " +
-        //            System.Math.Round(userObject.transform.position.z, 1);
 
 
 
@@ -983,16 +912,7 @@ public class TimeChange : MonoBehaviour {
             if(i< fishPositionsXYear[nActualYear].Count)
             {
                 Vector2 pos = fishPositionsXYear[nActualYear].ElementAt<Vector2>(i);
-                //realDir = (pos - p2);
-                //rotationAngle = Vector2.Angle((p4 - p2).normalized, realDir.normalized);
-                //virtualDir = RotateVector(Vector2.right, rotationAngle);
-                //change = virtualDir.normalized * realDir.magnitude * (VRDiagonalDistance / RWDiagonalDistance);
-                //newPosition = downLeft + change;
 
-                //Coordinate c = new Coordinate(pos.y, pos.x);
-
-                //pos.x = (float)c.UTM.Northing;
-                //pos.y = (float)c.UTM.Easting;
 
                 newPosition = ConvertRealtoVR(pos);
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = 1;
@@ -1009,7 +929,6 @@ public class TimeChange : MonoBehaviour {
                 }
 
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i)*10;
-                //listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>()._childAmount = fishNumberXYearInPos[nActualYear].ElementAt<int>(i);
                 listFishSchools.ElementAt<GameObject>(i).GetComponent<SchoolController>().Respawn();
             }
             else

@@ -15,9 +15,6 @@ public class UserMovement : MonoBehaviour {
 
         
 
-        //seaBeds = new Mesh[ns];
-
-        //seaBeds.
 		
 	}
 	

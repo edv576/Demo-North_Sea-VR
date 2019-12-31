@@ -28,14 +28,7 @@ public class PointerHandler : MonoBehaviour
 
         }
 
-        //if (e.target.name == "Cube")
-        //{
-        //    Debug.Log("Cube was clicked");
-        //}
-        //else if (e.target.name == "Button")
-        //{
-        //    Debug.Log("Button was clicked");
-        //}
+
     }
 
     public void PointerInside(object sender, PointerEventArgs e)
@@ -46,14 +39,7 @@ public class PointerHandler : MonoBehaviour
             e.target.gameObject.GetComponent<Renderer>().material = selectedMaterial;
 
         }
-        //if (e.target.name == "Cube")
-        //{           
-        //    Debug.Log("Cube was entered");
-        //}
-        //else if (e.target.name == "Button")
-        //{
-        //    Debug.Log("Button was entered");
-        //}
+
     }
 
     public void PointerOutside(object sender, PointerEventArgs e)
@@ -64,13 +50,6 @@ public class PointerHandler : MonoBehaviour
             e.target.gameObject.GetComponent<Renderer>().material = unselectedMaterial;
 
         }
-        //if (e.target.name == "Cube")
-        //{
-        //    Debug.Log("Cube was exited");
-        //}
-        //else if (e.target.name == "Button")
-        //{
-        //    Debug.Log("Button was exited");
-        //}
+
     }
 }
