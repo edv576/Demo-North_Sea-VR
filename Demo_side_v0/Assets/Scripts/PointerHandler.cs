@@ -21,7 +21,7 @@ public class PointerHandler : MonoBehaviour
 
     public void PointerClick(object sender, PointerEventArgs e)
     {
-        if(e.target.name.Contains("Point of interest"))
+        if(e.target.name.Contains("interest"))
         {
             player.transform.position = GetComponent<PositionTrack>().GetPositionFromMap(e.target.gameObject.transform.localPosition);
 
@@ -34,7 +34,7 @@ public class PointerHandler : MonoBehaviour
     public void PointerInside(object sender, PointerEventArgs e)
     {
 
-        if (e.target.name.Contains("Point of interest"))
+        if (e.target.name.Contains("interest"))
         {
             e.target.gameObject.GetComponent<Renderer>().material = selectedMaterial;
 
@@ -45,7 +45,7 @@ public class PointerHandler : MonoBehaviour
     public void PointerOutside(object sender, PointerEventArgs e)
     {
 
-        if (e.target.name.Contains("Point of interest"))
+        if (e.target.name.Contains("interest"))
         {
             e.target.gameObject.GetComponent<Renderer>().material = unselectedMaterial;
 
