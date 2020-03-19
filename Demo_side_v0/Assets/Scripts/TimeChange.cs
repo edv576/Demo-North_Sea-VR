@@ -582,8 +582,7 @@ public class TimeChange : MonoBehaviour {
         p3 = p1 + perpDirection * sideMagnitude;
         p4 = p2 + perpDirection * sideMagnitude;
 
-        float t1 = (p3 - p1).magnitude;
-        float t2 = (p4 - p2).magnitude;
+
 
 
 
@@ -804,7 +803,7 @@ public class TimeChange : MonoBehaviour {
 
 
         
-        //if (OVRInput.GetUp(OVRInput.Button.Three) || Input.GetKeyDown(KeyCode.DownArrow))
+    
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0) || Input.GetKeyDown(KeyCode.DownArrow))
         {           
             if(nActualYear > 0)
@@ -812,7 +811,6 @@ public class TimeChange : MonoBehaviour {
 
                 nActualYear--;
                 dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
-                //playerObject.transform.position = initialPlayerPosition;
                 freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
                     freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
@@ -840,7 +838,6 @@ public class TimeChange : MonoBehaviour {
 
         }
 
-        //if (OVRInput.GetUp(OVRInput.Button.Four) || Input.GetKeyDown(KeyCode.UpArrow))
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (nActualYear < years.Length - 1)
