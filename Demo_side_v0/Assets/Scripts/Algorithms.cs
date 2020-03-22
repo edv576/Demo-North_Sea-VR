@@ -23,6 +23,7 @@ public class Algorithms : MonoBehaviour
         return (A_PV2V1 + A_PV1V3 + A_PV3V4 + A_PV4V2);
     }
 
+    //Answers if point P is within the area formed by V1 ... V4
     public bool InAreaOfStudy_4Vertices(Vector2 P, Vector2 V1, Vector2 V2, Vector2 V3, Vector2 V4)
     {
 

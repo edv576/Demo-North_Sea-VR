@@ -4,19 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
 using System.Linq;
-using System.Windows;
-using CoordinateSharp;
 using MIConvexHull;
-using g3;
 using System;
 
 
+//2D point used for the maps in the application
 struct Point2D
 {
     public float x;
     public float y;
 };
 
+//Struct for the salinity point. Contains the salinity in PPT, layer and the year
 [Serializable]
 public struct SalinityPoint
 {
@@ -28,6 +27,9 @@ public struct SalinityPoint
 
 };
 
+
+//Used to save data of one of the subdivisions that divides the whole water space in the area of study.
+//It takes in account brackish water which wasn't considered for the first version of the system
 struct WaterSubdivision
 {
     public float x0;
@@ -46,38 +48,50 @@ public class TimeChange : MonoBehaviour {
 
     public float[] freshWaterProportions;
     public Vector3[] fishPositions;
+    //Integer representing the index of the current year for the application. If 3 years are used then there are 3 indexes.
     int nActualYear;   
     public GameObject freshWater;
-    public Renderer waterRenderer;
     public GameObject playerObject;
+    //Template object for the fish school. It will be replicated later in every position the fish are according to the data.
     public GameObject fishSchool;
+    //Object that is the template of the freshwater data point. It's then replicated for all the datapoints that represent freshwater.
     public GameObject unitSalinityDivision;
+    //Maximun alpha for the transparence of the freshwater
     public int maximumAlpha;
     public int visibilityAlpha;
+    //Maximum and minimum limits for freshwater in PPT
     public float limitUpFreshWaterValue;
     public float limitDownFreshWaterValue;
+    //Indicates if the freshwater is visible or not
     public bool isVisibilityMode;
     List<GameObject> allUnitSalinityDivisions;
     List<GameObject> allUnitSecondarySalinityDivisions;
     List<GameObject> listFishSchools;
-    Vector3 initialPlayerPosition;
-    Vector3 lastPlayerPosition;
+
     float xInitialProportion;
     Text dataTimeText;
-    Text dataCoordinatesText;
 
+    //Initial number of fish. Will change depending on the data
     int numberFish = 63;
+    //Number of years used for the application. Its 5 by default but can be changed in the Inspector mode.
     public int yearSamples = 5;
+    //Initial year of the ones used in the application.
     public int startYear = 2005;
+    //No longer used. It helped if the the years were separated by a constant number.
     public int yearStep = 2;
+    //Contains all the years
     public int[] years;
+    //Positions were the fish are in the area of study. Obtained from the read data.
     List<Vector2>[] fishPositionsXYear;
     List<int>[] fishNumberXYearInPos;
+    //Lists of all salinity points for all years
     List<SalinityPoint>[] salinityPointsXYear;
     List<int>[] salinityIndexesXYearMixDLimit;
     List<int>[] salinityIndexesXYearMixUlimit;
+    //Has all salinity points for an specific year
     SalinityPoint[] salinityPoints;
-    float yPos;
+    //Position were the fish schools are moved to be invisible to the user. This happens when the number of schools is less than the
+    //maximum number of usable schools.
     Vector3 vanishPos;
     List<double[]> allFreshSalinityPoints;
     bool areSalinityPointsVisible;
@@ -87,13 +101,16 @@ public class TimeChange : MonoBehaviour {
     public BoxCollider seaFloorCollider = null;
     public BoxCollider seaWaterCollider = null;
     float maxX, minX, maxY, minY;
-    float rotationAngle2;
+    //Diagonal of the area of study in the real world
     float RWDiagonalDistance;
+    //Diagonal of the are of study in the virtual world
     float VRDiagonalDistance;
+    //4 points that define the area of study in the real world
     Vector2 p1, p2, p3, p4;
-    Vector2 Q, U, V;
-    float a, b;
-    Point2D[] pointsMap;
+    Vector2 Q;
+
+
+    //Corners of the area of study in the virtual world
     Vector2 upperRight;
     Vector2 downLeft;
     public int numberWaterLayers;
@@ -101,13 +118,14 @@ public class TimeChange : MonoBehaviour {
     public int subdivisions;
     List<WaterSubdivision[,]> listWaterSubdivisionsXYear;
     
-
+    //Commands used for the VR controllers
     public SteamVR_ActionSet movementSet;
     public SteamVR_Action_Boolean clickMove;
     public SteamVR_Action_Vector2 clickAxis;
     public SteamVR_Action_Boolean clickGrip;
     public SteamVR_Input_Sources handtype;
 
+    //Rotates the vector a number of degrees (0-360)
     public Vector2 RotateVector(Vector2 v, float angle)
     {
         float radian = angle * Mathf.Deg2Rad;
@@ -117,130 +135,30 @@ public class TimeChange : MonoBehaviour {
         
     }
 
-    bool onSegment(Point2D p, Point2D q, Point2D r)
-    {
-        if (q.x <= Mathf.Max(p.x, r.x) && q.x >= Mathf.Min(p.x, r.x) &&
-                q.y <= Mathf.Max(p.y, r.y) && q.y >= Mathf.Min(p.y, r.y))
-            return true;
-        return false;
-                
-    }
 
-    int orientation(Point2D p, Point2D q, Point2D r)
-    {
-        float val = (q.y - p.y) * (r.x - q.x) -
-                  (q.x - p.x) * (r.y - q.y);
+    //Vector2 ConvertVRtoReal(Vector2 point)
+    //{
 
-        if (val == 0) return 0;  // colinear 
-        return (val > 0) ? 1 : 2; // clock or counterclock wise 
-    }
-
-    bool doIntersect(Point2D p1, Point2D q1, Point2D p2, Point2D q2)
-    {
-        // Find the four orientations needed for general and 
-        // special cases 
-        int o1 = orientation(p1, q1, p2);
-        int o2 = orientation(p1, q1, q2);
-        int o3 = orientation(p2, q2, p1);
-        int o4 = orientation(p2, q2, q1);
-
-        // General case 
-        if (o1 != o2 && o3 != o4)
-            return true;
-
-        // Special Cases 
-        // p1, q1 and p2 are colinear and p2 lies on segment p1q1 
-        if (o1 == 0 && onSegment(p1, p2, q1)) return true;
-
-        // p1, q1 and p2 are colinear and q2 lies on segment p1q1 
-        if (o2 == 0 && onSegment(p1, q2, q1)) return true;
-
-        // p2, q2 and p1 are colinear and p1 lies on segment p2q2 
-        if (o3 == 0 && onSegment(p2, p1, q2)) return true;
-
-        // p2, q2 and q1 are colinear and q1 lies on segment p2q2 
-        if (o4 == 0 && onSegment(p2, q1, q2)) return true;
-
-        return false; // Doesn't fall in any of the above cases 
-    }
-
-    bool isInside(Point2D[] polygon, int n, Point2D p)
-    {
-        // There must be at least 3 vertices in polygon[] 
-        if (n < 3) return false;
-
-        // Create a point for line segment from p to infinite 
-        Point2D extreme;
-
-        extreme.x = 6000f;
-        extreme.y = p.y;
-
-        // Count intersections of the above line with sides of polygon 
-        int count = 0, i = 0;
-        do
-        {
-            int next = (i + 1) % n;
-
-            // Check if the line segment from 'p' to 'extreme' intersects 
-            // with the line segment from 'polygon[i]' to 'polygon[next]' 
-            if (doIntersect(polygon[i], polygon[next], p, extreme))
-            {
-                // If the point 'p' is colinear with line segment 'i-next', 
-                // then check if it lies on segment. If it lies, return true, 
-                // otherwise false 
-                if (orientation(polygon[i], p, polygon[next]) == 0)
-                    return onSegment(polygon[i], p, polygon[next]);
-
-                count++;
-            }
-            i = next;
-        } while (i != 0);
-
-        // Return true if count is odd, false otherwise 
-        return (count % 2 == 1);  // Same as (count%2 == 1) 
-    }
-
-    bool IsInLimits(Vector2 position)
-    {
-
-        Vector2 W = position - Q;
-        float xabs = Mathf.Abs(Vector2.Dot(W, U));
-        float yabs = Mathf.Abs(Vector2.Dot(W, V));
-
-        if(xabs/a + yabs/b <= 1)
-        {
-            return true;
-
-        }
-        else
-        {
-            return false;
-        }
-
-    }
-
-    Vector2 ConvertVRtoReal(Vector2 point)
-    {
-
-        Vector2 realDir;
-        Vector2 virtualDir;
-        float rotationAngle;
-        Vector2 change;
-        Vector2 realPosition;
+    //    Vector2 realDir;
+    //    Vector2 virtualDir;
+    //    float rotationAngle;
+    //    Vector2 change;
+    //    Vector2 realPosition;
 
 
-        virtualDir = (point - downLeft);
-        rotationAngle = Vector2.Angle(Vector2.down, virtualDir.normalized);
-        realDir = RotateVector((p4 - p2).normalized, rotationAngle);
-        change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
-        realPosition = p2 + change;
+    //    virtualDir = (point - downLeft);
+    //    rotationAngle = Vector2.Angle(Vector2.down, virtualDir.normalized);
+    //    realDir = RotateVector((p4 - p2).normalized, rotationAngle);
+    //    change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
+    //    realPosition = p2 + change;
 
-        float rotationAngle2 = Vector2.Angle((p4 - p2).normalized, Vector2.right);
 
-        return realPosition;
 
-    }
+    //    return realPosition;
 
+    //}
+
+  // From real world units to Virtual units. It does a rotation first since the virtual area of study is not aligned to the real one.
     Vector2 ConvertRealtoVR(Vector2 point)
     {
 
@@ -261,162 +179,163 @@ public class TimeChange : MonoBehaviour {
 
     }
 
-    bool IsInSubdivision(WaterSubdivision subdivision, Vector2 point)
-    {
-        if (point.y <= subdivision.x0 && point.y > subdivision.xf)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+    //bool IsInSubdivision(WaterSubdivision subdivision, Vector2 point)
+    //{
+    //    if (point.y <= subdivision.x0 && point.y > subdivision.xf)
+    //    {
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //        return false;
+    //    }
 
-    }
+    //}
 
-    public void AddSecondarySalinityDivision(GameObject secondarySalinityDivision)
-    {
-        allUnitSecondarySalinityDivisions.Add(secondarySalinityDivision);
-    }
+    //public void AddSecondarySalinityDivision(GameObject secondarySalinityDivision)
+    //{
+    //    allUnitSecondarySalinityDivisions.Add(secondarySalinityDivision);
+    //}
 
-    public int NumberSecondarySalinityDivision()
-    {
-        return allUnitSecondarySalinityDivisions.Count;
-    }
+    //public int NumberSecondarySalinityDivision()
+    //{
+    //    return allUnitSecondarySalinityDivisions.Count;
+    //}
 
-    void CreateAllWaterSubdivisions()
-    {
-        listWaterSubdivisionsXYear = new List<WaterSubdivision[,]>();
-        float intervalSubdivision;
+    //void CreateAllWaterSubdivisions()
+    //{
+    //    listWaterSubdivisionsXYear = new List<WaterSubdivision[,]>();
+    //    float intervalSubdivision;
 
-        intervalSubdivision = Mathf.Abs(seaFloorCollider.bounds.max.z - seaFloorCollider.bounds.min.z)/subdivisions;
+    //    intervalSubdivision = Mathf.Abs(seaFloorCollider.bounds.max.z - seaFloorCollider.bounds.min.z)/subdivisions;
 
         
 
-        for (int i = 0; i < years.Length; i++)
-        {
-            WaterSubdivision[,] waterSubdivisionsXLayer = new WaterSubdivision[numberWaterLayers, subdivisions];
+    //    for (int i = 0; i < years.Length; i++)
+    //    {
+    //        WaterSubdivision[,] waterSubdivisionsXLayer = new WaterSubdivision[numberWaterLayers, subdivisions];
 
-            for(int j = 0; j < numberWaterLayers; j++)
-            {
-                for(int k = 0; k < subdivisions; k++)
-                {
-                    WaterSubdivision startWaterSubdivision = new WaterSubdivision();
-                    startWaterSubdivision.thereIsData = false;
-                    startWaterSubdivision.x0 = downLeft.y - k * intervalSubdivision;
-                    startWaterSubdivision.xf = downLeft.y - (k + 1) * intervalSubdivision;
-                    startWaterSubdivision.gradientY0 = 10000;
-                    startWaterSubdivision.gradientYf = 10000;
-                    startWaterSubdivision.layer = 0;
-                    waterSubdivisionsXLayer[j, k] = startWaterSubdivision;
-                }
-            }
+    //        for(int j = 0; j < numberWaterLayers; j++)
+    //        {
+    //            for(int k = 0; k < subdivisions; k++)
+    //            {
+    //                WaterSubdivision startWaterSubdivision = new WaterSubdivision();
+    //                startWaterSubdivision.thereIsData = false;
+    //                startWaterSubdivision.x0 = downLeft.y - k * intervalSubdivision;
+    //                startWaterSubdivision.xf = downLeft.y - (k + 1) * intervalSubdivision;
+    //                startWaterSubdivision.gradientY0 = 10000;
+    //                startWaterSubdivision.gradientYf = 10000;
+    //                startWaterSubdivision.layer = 0;
+    //                waterSubdivisionsXLayer[j, k] = startWaterSubdivision;
+    //            }
+    //        }
 
-            Algorithms alg = new Algorithms();
-            int matrixLimit = numberWaterLayers * subdivisions;
-            int actualCount = 0;
+    //        Algorithms alg = new Algorithms();
+    //        int matrixLimit = numberWaterLayers * subdivisions;
+    //        int actualCount = 0;
 
-            for(int j = 0; j < salinityIndexesXYearMixDLimit[i].Count; j++)
-            {
-                for(int k = 0; k < numberWaterLayers; k++)
-                {
-                    Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].x, salinityPoints[salinityIndexesXYearMixDLimit[i][j]].y));
+    //        for(int j = 0; j < salinityIndexesXYearMixDLimit[i].Count; j++)
+    //        {
+    //            for(int k = 0; k < numberWaterLayers; k++)
+    //            {
+    //                Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].x, salinityPoints[salinityIndexesXYearMixDLimit[i][j]].y));
 
-                    bool gotIt = false;
+    //                bool gotIt = false;
       
 
-                    for(int l = 0; l < subdivisions; l++)
-                    {
-                        if((salinityPoints[salinityIndexesXYearMixDLimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k,l].gradientY0 == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2,p3,p4))
-                        {
-                            waterSubdivisionsXLayer[k, l].gradientY0 = VRPoint.x;
-                            waterSubdivisionsXLayer[k, l].layer = k + 1;
-                            actualCount++;
-                            gotIt = true;
-                            break;
-                        }
+    //                for(int l = 0; l < subdivisions; l++)
+    //                {
+    //                    if((salinityPoints[salinityIndexesXYearMixDLimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k,l].gradientY0 == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2,p3,p4))
+    //                    {
+    //                        waterSubdivisionsXLayer[k, l].gradientY0 = VRPoint.x;
+    //                        waterSubdivisionsXLayer[k, l].layer = k + 1;
+    //                        actualCount++;
+    //                        gotIt = true;
+    //                        break;
+    //                    }
 
-                    }
+    //                }
 
-                    if (gotIt)
-                    {
-                        break;
-                    }
-
-
-
-                }
-                if(actualCount == matrixLimit)
-                {
-                    break;
-                }
-
-            }
-
-            actualCount = 0;
-
-            for (int j = 0; j < salinityIndexesXYearMixUlimit[i].Count; j++)
-            {
-                for (int k = 0; k < numberWaterLayers; k++)
-                {
-                    Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[i][j]].x, salinityPoints[salinityIndexesXYearMixUlimit[i][j]].y));
-
-                    bool gotIt = false;
-
-                    for (int l = 0; l < subdivisions; l++)
-                    {
-
-
-                        if ((salinityPoints[salinityIndexesXYearMixUlimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k, l].gradientYf == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2, p3, p4))
-                        {
-                            waterSubdivisionsXLayer[k, l].gradientYf = VRPoint.x;
-                            waterSubdivisionsXLayer[k, l].layer = k + 1;
-                            actualCount++;
-                            gotIt = true;
-                            break;
-                        }
-
-                    }
-
-                    if (gotIt)
-                    {
-                        break;
-                    }
+    //                if (gotIt)
+    //                {
+    //                    break;
+    //                }
 
 
 
-                }
+    //            }
+    //            if(actualCount == matrixLimit)
+    //            {
+    //                break;
+    //            }
 
-                if (actualCount == matrixLimit)
-                {
-                    break;
-                }
+    //        }
 
-            }
+    //        actualCount = 0;
 
-            actualCount = 0;
+    //        for (int j = 0; j < salinityIndexesXYearMixUlimit[i].Count; j++)
+    //        {
+    //            for (int k = 0; k < numberWaterLayers; k++)
+    //            {
+    //                Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[i][j]].x, salinityPoints[salinityIndexesXYearMixUlimit[i][j]].y));
 
-            for (int j = 0; j < numberWaterLayers; j++)
-            {
-                for (int k = 0; k < subdivisions; k++)
-                {
-                    if(waterSubdivisionsXLayer[j, k].gradientYf != 10000)
-                    {
-                        waterSubdivisionsXLayer[j, k].thereIsData = true;
-                        actualCount++;
-                    }
+    //                bool gotIt = false;
 
-                }
-            }
-
-            listWaterSubdivisionsXYear.Add(waterSubdivisionsXLayer);
+    //                for (int l = 0; l < subdivisions; l++)
+    //                {
 
 
+    //                    if ((salinityPoints[salinityIndexesXYearMixUlimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k, l].gradientYf == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2, p3, p4))
+    //                    {
+    //                        waterSubdivisionsXLayer[k, l].gradientYf = VRPoint.x;
+    //                        waterSubdivisionsXLayer[k, l].layer = k + 1;
+    //                        actualCount++;
+    //                        gotIt = true;
+    //                        break;
+    //                    }
 
-        }
+    //                }
 
-    }
+    //                if (gotIt)
+    //                {
+    //                    break;
+    //                }
 
+
+
+    //            }
+
+    //            if (actualCount == matrixLimit)
+    //            {
+    //                break;
+    //            }
+
+    //        }
+
+    //        actualCount = 0;
+
+    //        for (int j = 0; j < numberWaterLayers; j++)
+    //        {
+    //            for (int k = 0; k < subdivisions; k++)
+    //            {
+    //                if(waterSubdivisionsXLayer[j, k].gradientYf != 10000)
+    //                {
+    //                    waterSubdivisionsXLayer[j, k].thereIsData = true;
+    //                    actualCount++;
+    //                }
+
+    //            }
+    //        }
+
+    //        listWaterSubdivisionsXYear.Add(waterSubdivisionsXLayer);
+
+
+
+    //    }
+
+    //}
+
+    //Creates the points for freshwater salinity using the unitysalinitydivision object as template
     void CreateSalinityDivisions(int indexYear)
     {
         float initialDepth = seaWaterCollider.bounds.max.y;
@@ -443,8 +362,7 @@ public class TimeChange : MonoBehaviour {
         allUnitSalinityDivisions = new List<GameObject>();
         allUnitSecondarySalinityDivisions = new List<GameObject>();
         allFreshSalinityPoints = new List<double[]>();
-        List<DefaultVertex> listConvexHullSalinityV = new List<DefaultVertex>();
-        List<DefaultConvexFace<DefaultVertex>> listConvexHullSalinityF = new List<DefaultConvexFace<DefaultVertex>>();
+
 
         Algorithms alg = new Algorithms();
 
@@ -501,6 +419,7 @@ public class TimeChange : MonoBehaviour {
 
     }
 
+    //In case user needs to hide the freshwater
     void HideSalinityDivisions(bool hide)
     {
         if (hide)
@@ -521,6 +440,7 @@ public class TimeChange : MonoBehaviour {
 
     }
 
+    //Only used when user wants brackish water. Not useful for the current implementation.
     public void ChangeColorSalinityPoints(int typeChange)
     {
         if((typeChange == 1) || (typeChange == 2) || (allFreshSalinityPoints.Count > 0))
@@ -560,17 +480,16 @@ public class TimeChange : MonoBehaviour {
         nActualYear = 0;
         dataTimeText = GameObject.Find("Data Time Text").GetComponent<Text>();
         dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
-        initialPlayerPosition = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y,
-            playerObject.transform.position.z);
 
-        lastPlayerPosition = playerObject.transform.position;
+
+
         xInitialProportion = freshWater.transform.localScale.x;
         numberFish = fishSchool.GetComponent<SchoolController>()._childAmount;
 
         listFishSchools = new List<GameObject>();
 
 
-
+        //Initial points in the real world. The other 2 are calculated from here in a way that all 4 create a perfect square.
         p1 = new Vector2(53543.941f, 434126.177f);
         p2 = new Vector2(56260.2f, 430603.6f);
 
@@ -589,9 +508,9 @@ public class TimeChange : MonoBehaviour {
         Q = 0.5f * (p2 + p3);
 
 
-        rotationAngle2 = Vector2.Angle((p4 - p2).normalized, (Q - p2).normalized);
+     
 
-
+        //find the minimum and maximum points
         maxX = -5000;
         minX = 5000;
         maxY = -5000;
@@ -633,16 +552,13 @@ public class TimeChange : MonoBehaviour {
         VRDiagonalDistance = (upperRight - downLeft).magnitude;
 
         
-        a = 0.5f * (p4 - p1).magnitude;
-        b = 0.5f * (p3 - p2).magnitude;
 
-        U = (p4 - p1) / (2 * a);
-        V = (p3 - p2) / (2 * b);
 
-        float tx = p1.x;
-        float ty = p1.y;
+ 
 
         print(Q.x);
+
+        //Load salinity data
 
         SalinityPreCalculations preCalculations = new SalinityPreCalculations();
 
@@ -651,9 +567,6 @@ public class TimeChange : MonoBehaviour {
         salinityIndexesXYearMixDLimit = preCalculations.Load(1);
         salinityIndexesXYearMixUlimit = preCalculations.Load(2);
 
-      
-
-        //CreateAllWaterSubdivisions();
 
         salinityPointsXYear = new List<SalinityPoint>[years.Length];
 
@@ -681,7 +594,7 @@ public class TimeChange : MonoBehaviour {
 
 
 
-
+        //Load fish data
         List<Dictionary<string, object>> dataFish = CSVReader.Read("Clupea");
 
         Algorithms alg = new Algorithms();
@@ -743,6 +656,8 @@ public class TimeChange : MonoBehaviour {
 
         }
 
+        //Instantiate maximum number of fish schools
+
         listFishSchools = new List<GameObject>();
 
         for(int i = 0; i < max; i++)
@@ -752,11 +667,10 @@ public class TimeChange : MonoBehaviour {
 
         }
 
-        yPos = fishSchool.transform.position.y;
 
         vanishPos = new Vector3(0.0f, -300.0f, 0.0f);
        
-
+        //Used to change the number of fish in schools. It doesn't work without a temporal delay.
         StartCoroutine("WaitRespawn");
 
 
@@ -764,46 +678,40 @@ public class TimeChange : MonoBehaviour {
 
 
 
-    int GetWaterLayer(float actualDepth)
-    {
-        if(actualDepth <= upperRight.y && actualDepth >= deepestLevel)
-        {
-            float depthChunk = (upperRight.y - deepestLevel) / 10;
+    //int GetWaterLayer(float actualDepth)
+    //{
+    //    if(actualDepth <= upperRight.y && actualDepth >= deepestLevel)
+    //    {
+    //        float depthChunk = (upperRight.y - deepestLevel) / 10;
 
-            int waterLayer = 1;
-            for (int i = 0; i < numberWaterLayers; i++)
-            {
-                if (actualDepth >= upperRight.y - depthChunk * waterLayer)
-                {
+    //        int waterLayer = 1;
+    //        for (int i = 0; i < numberWaterLayers; i++)
+    //        {
+    //            if (actualDepth >= upperRight.y - depthChunk * waterLayer)
+    //            {
 
-                    break;
-                }
-                waterLayer++;
+    //                break;
+    //            }
+    //            waterLayer++;
 
-            }
+    //        }
 
-            return waterLayer;
-        }
-        else
-        {
+    //        return waterLayer;
+    //    }
+    //    else
+    //    {
 
-            return -1;
-        }
+    //        return -1;
+    //    }
 
 
 
-    }
+    //}
 	
 	// Update is called once per frame
 	void Update () {
-
-
-
-        lastPlayerPosition = playerObject.transform.position;
-
-
-        
     
+        //Change the salinity with years - for VR
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0) || Input.GetKeyDown(KeyCode.DownArrow))
         {           
             if(nActualYear > 0)
@@ -829,7 +737,7 @@ public class TimeChange : MonoBehaviour {
    
                 }
 
-                StartCoroutine("WaitRespawn");
+                StartCoroutine(WaitRespawn());
 
                 
                 
@@ -837,6 +745,8 @@ public class TimeChange : MonoBehaviour {
             }
 
         }
+
+        //Change the salinity with years for Flat Screens
 
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0) || Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -865,7 +775,8 @@ public class TimeChange : MonoBehaviour {
                   
                 }
 
-                StartCoroutine("WaitRespawn");
+       
+                StartCoroutine(WaitRespawn());
 
 
 
@@ -873,6 +784,7 @@ public class TimeChange : MonoBehaviour {
             
         }
 
+        //Hide or show freshwater
         if (Input.GetKeyDown(KeyCode.N) || clickGrip.GetLastStateDown(handtype))
         {
             if (areSalinityPointsVisible)
@@ -893,12 +805,10 @@ public class TimeChange : MonoBehaviour {
 
     }
 
+    //Respawns the fish schools - one fish at a time
     IEnumerator WaitRespawn()
     {
-        Vector2 realDir;
-        Vector2 virtualDir;
-        float rotationAngle;
-        Vector2 change;
+
         Vector2 newPosition;
 
         GetComponent<SeaBedChange_VIVE>().ResetFishMarkers();

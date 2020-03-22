@@ -29,6 +29,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
     public SteamVR_Action_Vector2 clickAxis;
     public SteamVR_Input_Sources handtype;
 
+    //All fish positions in the map are deleted
     public void ResetFishMarkers()
     {
         if(fishMarkersVR.Count > 0)
@@ -45,6 +46,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 
     }
 
+    //Add fish positions in the map
     public void AddFishMarker(Vector2 posFishInMap)
     {
 
@@ -93,6 +95,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        //Change seabed using VR
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             
@@ -108,6 +111,7 @@ public class SeaBedChange_VIVE : MonoBehaviour {
 
         }
 
+        //Change seabed using Flat Screens
         if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (nActualSeaBed < seaBeds.Length - 1)

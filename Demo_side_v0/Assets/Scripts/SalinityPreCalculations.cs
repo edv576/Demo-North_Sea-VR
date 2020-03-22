@@ -80,6 +80,7 @@ public class SalinityPreCalculations : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //The csv file needs to be in the resources folder of the project
         List<Dictionary<string, object>> dataSalinity = CSVReader.Read("alldata2006-2010-2012");
 
 
@@ -99,13 +100,14 @@ public class SalinityPreCalculations : MonoBehaviour
         }
 
 
+        //
         for (int i = 0; i < dataSalinity.Count; i++)
         {
             float n;
 
 
 
-
+            //Gets all the datapoints with freshwater and adds them to lists. They will be later used in the TimeChange script
             if (float.TryParse(dataSalinity[i]["X"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n) &&
                 float.TryParse(dataSalinity[i]["Y"].ToString(), out n))
             {

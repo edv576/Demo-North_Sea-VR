@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
+
+//This script detects if the user is using a HMD or not. It adapts the application accordingly to Flat Screens or VR use.
 public class HMDDetection : MonoBehaviour
 {
     public GameObject VRPanel;
