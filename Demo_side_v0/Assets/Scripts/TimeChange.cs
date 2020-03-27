@@ -136,27 +136,7 @@ public class TimeChange : MonoBehaviour {
     }
 
 
-    //Vector2 ConvertVRtoReal(Vector2 point)
-    //{
 
-    //    Vector2 realDir;
-    //    Vector2 virtualDir;
-    //    float rotationAngle;
-    //    Vector2 change;
-    //    Vector2 realPosition;
-
-
-    //    virtualDir = (point - downLeft);
-    //    rotationAngle = Vector2.Angle(Vector2.down, virtualDir.normalized);
-    //    realDir = RotateVector((p4 - p2).normalized, rotationAngle);
-    //    change = realDir.normalized * virtualDir.magnitude * (RWDiagonalDistance / VRDiagonalDistance);
-    //    realPosition = p2 + change;
-
-
-
-    //    return realPosition;
-
-    //}
 
   // From real world units to Virtual units. It does a rotation first since the virtual area of study is not aligned to the real one.
     Vector2 ConvertRealtoVR(Vector2 point)
@@ -179,161 +159,7 @@ public class TimeChange : MonoBehaviour {
 
     }
 
-    //bool IsInSubdivision(WaterSubdivision subdivision, Vector2 point)
-    //{
-    //    if (point.y <= subdivision.x0 && point.y > subdivision.xf)
-    //    {
-    //        return true;
-    //    }
-    //    else
-    //    {
-    //        return false;
-    //    }
 
-    //}
-
-    //public void AddSecondarySalinityDivision(GameObject secondarySalinityDivision)
-    //{
-    //    allUnitSecondarySalinityDivisions.Add(secondarySalinityDivision);
-    //}
-
-    //public int NumberSecondarySalinityDivision()
-    //{
-    //    return allUnitSecondarySalinityDivisions.Count;
-    //}
-
-    //void CreateAllWaterSubdivisions()
-    //{
-    //    listWaterSubdivisionsXYear = new List<WaterSubdivision[,]>();
-    //    float intervalSubdivision;
-
-    //    intervalSubdivision = Mathf.Abs(seaFloorCollider.bounds.max.z - seaFloorCollider.bounds.min.z)/subdivisions;
-
-        
-
-    //    for (int i = 0; i < years.Length; i++)
-    //    {
-    //        WaterSubdivision[,] waterSubdivisionsXLayer = new WaterSubdivision[numberWaterLayers, subdivisions];
-
-    //        for(int j = 0; j < numberWaterLayers; j++)
-    //        {
-    //            for(int k = 0; k < subdivisions; k++)
-    //            {
-    //                WaterSubdivision startWaterSubdivision = new WaterSubdivision();
-    //                startWaterSubdivision.thereIsData = false;
-    //                startWaterSubdivision.x0 = downLeft.y - k * intervalSubdivision;
-    //                startWaterSubdivision.xf = downLeft.y - (k + 1) * intervalSubdivision;
-    //                startWaterSubdivision.gradientY0 = 10000;
-    //                startWaterSubdivision.gradientYf = 10000;
-    //                startWaterSubdivision.layer = 0;
-    //                waterSubdivisionsXLayer[j, k] = startWaterSubdivision;
-    //            }
-    //        }
-
-    //        Algorithms alg = new Algorithms();
-    //        int matrixLimit = numberWaterLayers * subdivisions;
-    //        int actualCount = 0;
-
-    //        for(int j = 0; j < salinityIndexesXYearMixDLimit[i].Count; j++)
-    //        {
-    //            for(int k = 0; k < numberWaterLayers; k++)
-    //            {
-    //                Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixDLimit[i][j]].x, salinityPoints[salinityIndexesXYearMixDLimit[i][j]].y));
-
-    //                bool gotIt = false;
-      
-
-    //                for(int l = 0; l < subdivisions; l++)
-    //                {
-    //                    if((salinityPoints[salinityIndexesXYearMixDLimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k,l].gradientY0 == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2,p3,p4))
-    //                    {
-    //                        waterSubdivisionsXLayer[k, l].gradientY0 = VRPoint.x;
-    //                        waterSubdivisionsXLayer[k, l].layer = k + 1;
-    //                        actualCount++;
-    //                        gotIt = true;
-    //                        break;
-    //                    }
-
-    //                }
-
-    //                if (gotIt)
-    //                {
-    //                    break;
-    //                }
-
-
-
-    //            }
-    //            if(actualCount == matrixLimit)
-    //            {
-    //                break;
-    //            }
-
-    //        }
-
-    //        actualCount = 0;
-
-    //        for (int j = 0; j < salinityIndexesXYearMixUlimit[i].Count; j++)
-    //        {
-    //            for (int k = 0; k < numberWaterLayers; k++)
-    //            {
-    //                Vector2 VRPoint = ConvertRealtoVR(new Vector2(salinityPoints[salinityIndexesXYearMixUlimit[i][j]].x, salinityPoints[salinityIndexesXYearMixUlimit[i][j]].y));
-
-    //                bool gotIt = false;
-
-    //                for (int l = 0; l < subdivisions; l++)
-    //                {
-
-
-    //                    if ((salinityPoints[salinityIndexesXYearMixUlimit[i][j]].waterLayer - 1 == k) && (waterSubdivisionsXLayer[k, l].gradientYf == 10000) && IsInSubdivision(waterSubdivisionsXLayer[k, l], VRPoint) && alg.InAreaOfStudy_4Vertices(ConvertVRtoReal(VRPoint), p1, p2, p3, p4))
-    //                    {
-    //                        waterSubdivisionsXLayer[k, l].gradientYf = VRPoint.x;
-    //                        waterSubdivisionsXLayer[k, l].layer = k + 1;
-    //                        actualCount++;
-    //                        gotIt = true;
-    //                        break;
-    //                    }
-
-    //                }
-
-    //                if (gotIt)
-    //                {
-    //                    break;
-    //                }
-
-
-
-    //            }
-
-    //            if (actualCount == matrixLimit)
-    //            {
-    //                break;
-    //            }
-
-    //        }
-
-    //        actualCount = 0;
-
-    //        for (int j = 0; j < numberWaterLayers; j++)
-    //        {
-    //            for (int k = 0; k < subdivisions; k++)
-    //            {
-    //                if(waterSubdivisionsXLayer[j, k].gradientYf != 10000)
-    //                {
-    //                    waterSubdivisionsXLayer[j, k].thereIsData = true;
-    //                    actualCount++;
-    //                }
-
-    //            }
-    //        }
-
-    //        listWaterSubdivisionsXYear.Add(waterSubdivisionsXLayer);
-
-
-
-    //    }
-
-    //}
 
     //Creates the points for freshwater salinity using the unitysalinitydivision object as template
     void CreateSalinityDivisions(int indexYear)
@@ -806,6 +632,8 @@ public class TimeChange : MonoBehaviour {
     }
 
     //Respawns the fish schools - one fish at a time
+    //There is a bug that needs to be fixed here. If the user switches years too fast in a continuous way the fish will be spawned but not
+    //destroyed to correspond to new year. Eventually the big number of fish will make the system slow.
     IEnumerator WaitRespawn()
     {
 

@@ -18,28 +18,28 @@ public class LaserBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // 1
+
         laser = Instantiate(laserPrefab);
-        // 2
+
         laserTransform = laser.transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // 1
+  
         if (teleportAction.GetState(handtype))
         {
             RaycastHit hit;
 
-            // 2
+ 
             if (Physics.Raycast(controllerPose.transform.position, transform.forward, out hit, 100))
             {
                 hitPoint = hit.point;
                 ShowLaser(hit);
             }
         }
-        else // 3
+        else 
         {
             laser.SetActive(false);
         }
@@ -47,13 +47,13 @@ public class LaserBehaviour : MonoBehaviour
 
     private void ShowLaser(RaycastHit hit)
     {
-        // 1
+   
         laser.SetActive(true);
-        // 2
+
         laserTransform.position = Vector3.Lerp(controllerPose.transform.position, hitPoint, .5f);
-        // 3
+
         laserTransform.LookAt(hitPoint);
-        // 4
+
         laserTransform.localScale = new Vector3(laserTransform.localScale.x,
                                                 laserTransform.localScale.y,
                                                 hit.distance);

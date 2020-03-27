@@ -108,6 +108,12 @@ public class SalinityPreCalculations : MonoBehaviour
 
 
             //Gets all the datapoints with freshwater and adds them to lists. They will be later used in the TimeChange script
+            //The file needs to contain the following fields: 
+            //-Var: The salinity value of the data point. The units are PPT (Parts per thousand)
+            //-X: X coordinate of the location of the data point. The units are meters.
+            //-Y: Y coordinate of the location of the data point. The units are meters.
+            //-Level: Water level of the data point. Its 10 for the deepest and 1 for the closest to the surface.
+            //-Year: Year when the sample was taken.
             if (float.TryParse(dataSalinity[i]["X"].ToString(), out n) && float.TryParse(dataSalinity[i]["var"].ToString(), out n) &&
                 float.TryParse(dataSalinity[i]["Y"].ToString(), out n))
             {
