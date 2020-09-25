@@ -504,35 +504,6 @@ public class TimeChange : MonoBehaviour {
 
 
 
-    //int GetWaterLayer(float actualDepth)
-    //{
-    //    if(actualDepth <= upperRight.y && actualDepth >= deepestLevel)
-    //    {
-    //        float depthChunk = (upperRight.y - deepestLevel) / 10;
-
-    //        int waterLayer = 1;
-    //        for (int i = 0; i < numberWaterLayers; i++)
-    //        {
-    //            if (actualDepth >= upperRight.y - depthChunk * waterLayer)
-    //            {
-
-    //                break;
-    //            }
-    //            waterLayer++;
-
-    //        }
-
-    //        return waterLayer;
-    //    }
-    //    else
-    //    {
-
-    //        return -1;
-    //    }
-
-
-
-    //}
 	
 	// Update is called once per frame
 	void Update () {
