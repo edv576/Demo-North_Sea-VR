@@ -9,12 +9,13 @@ using System.Diagnostics;
 
 
 
-
+//This scripts is in charge of pre-processing the data from CSV files and save them to arrays which would later be used in the application. Its executed only if the data
+//has been modified.
 public class SalinityPreCalculations : MonoBehaviour
 {
 
     public int[] years;
-
+	
     public static void Save(List<int>[] list, int number)
     {
   
