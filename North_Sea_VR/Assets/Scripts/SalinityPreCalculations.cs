@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using CoordinateSharp;
 using System.Diagnostics;
+using UnityEditor;
 
 
 
@@ -17,11 +18,10 @@ public class SalinityPreCalculations : MonoBehaviour
     public int[] years;
 	
     public static void Save(List<int>[] list, int number)
-    {
-  
-        
+    {   
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/savedArray" + Convert.ToString(number) +  ".gd");
+        FileStream file = File.Create(Application.dataPath + "/Ex_lists" + "/savedArray" + Convert.ToString(number) + ".gd");
+        //FileStream file = File.Create(Application.persistentDataPath + "/savedArray" + Convert.ToString(number) +  ".gd");
         bf.Serialize(file, list);
         file.Close();
     }
@@ -43,7 +43,8 @@ public class SalinityPreCalculations : MonoBehaviour
             List<int>[] array;
 
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/savedArray" + Convert.ToString(number) + ".gd", FileMode.Open);
+            FileStream file = File.Open(Application.dataPath + "/Ex_lists" + "/savedArray" + Convert.ToString(number) + ".gd", FileMode.Open);
+            //FileStream file = File.Open(Application.persistentDataPath + "/savedArray" + Convert.ToString(number) + ".gd", FileMode.Open);
             array = (List<int>[])bf.Deserialize(file);
             file.Close();
 
