@@ -8,38 +8,38 @@ using MIConvexHull;
 using System;
 
 
-//2D point used for the maps in the application
-struct Point2D
-{
-    public float x;
-    public float y;
-};
+////2D point used for the maps in the application
+//struct Point2D
+//{
+//    public float x;
+//    public float y;
+//};
 
-//Struct for the salinity point. Contains the salinity in PPT, layer and the year
-[Serializable]
-public struct SalinityPoint
-{
-    public float x;
-    public float y;
-    public float salinity;
-    public int waterLayer;
-    public int year;
+////Struct for the salinity point. Contains the salinity in PPT, layer and the year
+//[Serializable]
+//public struct SalinityPoint
+//{
+//    public float x;
+//    public float y;
+//    public float salinity;
+//    public int waterLayer;
+//    public int year;
 
-};
+//};
 
 
-//Used to save data of one of the subdivisions that divides the whole water space in the area of study.
-//It takes in account brackish water which wasn't considered for the first version of the system
-struct WaterSubdivision
-{
-    public float x0;
-    public float xf;
-    public float gradientY0;
-    public float gradientYf;
-    public bool thereIsData;
-    public float layer;
+////Used to save data of one of the subdivisions that divides the whole water space in the area of study.
+////It takes in account brackish water which wasn't considered for the first version of the system
+//struct WaterSubdivision
+//{
+//    public float x0;
+//    public float xf;
+//    public float gradientY0;
+//    public float gradientYf;
+//    public bool thereIsData;
+//    public float layer;
     
-};
+//};
 
 
 

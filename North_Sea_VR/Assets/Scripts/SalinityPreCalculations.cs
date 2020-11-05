@@ -29,7 +29,7 @@ public class SalinityPreCalculations : MonoBehaviour
     public static void SaveSalinityPoints(SalinityPoint[] salinityPoints)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/salinityPoints.gd");
+        FileStream file = File.Create(Application.dataPath + "/Ex_lists" + "/salinityPoints.gd");
         bf.Serialize(file, salinityPoints);
         file.Close();
     }
@@ -38,7 +38,7 @@ public class SalinityPreCalculations : MonoBehaviour
     {
 
 
-       if (File.Exists(Application.persistentDataPath + "/savedArray" + Convert.ToString(number) + ".gd"))
+       if (File.Exists(Application.dataPath + "/Ex_lists" + "/savedArray" + Convert.ToString(number) + ".gd"))
         {
             List<int>[] array;
 
@@ -60,12 +60,12 @@ public class SalinityPreCalculations : MonoBehaviour
     {
 
 
-        if (File.Exists(Application.persistentDataPath + "/salinityPoints.gd"))
+        if (File.Exists(Application.dataPath + "/Ex_lists" + "/salinityPoints.gd"))
         {
             SalinityPoint[] array;
 
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/salinityPoints.gd", FileMode.Open);
+            FileStream file = File.Open(Application.dataPath + "/Ex_lists" + "/salinityPoints.gd", FileMode.Open);
             array = (SalinityPoint[])bf.Deserialize(file);
             file.Close();
 
