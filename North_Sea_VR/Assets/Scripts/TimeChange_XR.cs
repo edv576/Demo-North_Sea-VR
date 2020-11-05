@@ -4,42 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
 using System.Linq;
+using UnityEngine.XR;
 using MIConvexHull;
 using System;
 
-
-////2D point used for the maps in the application
-//struct Point2D_XR
-//{
-//    public float x;
-//    public float y;
-//};
-
-////Struct for the salinity point. Contains the salinity in PPT, layer and the year
-//[Serializable]
-//public struct SalinityPoint_XR
-//{
-//    public float x;
-//    public float y;
-//    public float salinity;
-//    public int waterLayer;
-//    public int year;
-
-//};
-
-
-////Used to save data of one of the subdivisions that divides the whole water space in the area of study.
-////It takes in account brackish water which wasn't considered for the first version of the system
-//struct WaterSubdivision_XR
-//{
-//    public float x0;
-//    public float xf;
-//    public float gradientY0;
-//    public float gradientYf;
-//    public bool thereIsData;
-//    public float layer;
-    
-//};
 
 
 
@@ -118,12 +86,8 @@ public class TimeChange_XR : MonoBehaviour {
     public int subdivisions;
     List<WaterSubdivision[,]> listWaterSubdivisionsXYear;
     
-    //Commands used for the VR controllers
-    public SteamVR_ActionSet movementSet;
-    public SteamVR_Action_Boolean clickMove;
-    public SteamVR_Action_Vector2 clickAxis;
-    public SteamVR_Action_Boolean clickGrip;
-    public SteamVR_Input_Sources handtype;
+
+
 
     //Rotates the vector a number of degrees (0-360)
     public Vector2 RotateVector(Vector2 v, float angle)
@@ -503,98 +467,103 @@ public class TimeChange_XR : MonoBehaviour {
     }
 
 
-
-	
-	// Update is called once per frame
-	void Update () {
-    
-        //Change the salinity with years - for VR
-        if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y < 0) || Input.GetKeyDown(KeyCode.DownArrow))
-        {           
-            if(nActualYear > 0)
-            {
-
-                nActualYear--;
-                dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
-                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
-                    freshWater.transform.localScale.y, freshWater.transform.localScale.z);
-
-                print(years[nActualYear]);
-
-                CreateSalinityDivisions(nActualYear);
-
-                if (areSalinityPointsVisible)
-                {
-                    HideSalinityDivisions(false);
-
-                }
-                else
-                {
-                    HideSalinityDivisions(true);
-   
-                }
-
-                StartCoroutine(WaitRespawn());
-
-                
-                
-
-            }
-
-        }
-
-        //Change the salinity with years for Flat Screens
-
-        if ((clickMove.GetLastStateDown(handtype) && clickAxis.GetLastAxis(handtype).y > 0) || Input.GetKeyDown(KeyCode.UpArrow))
+    public void MoveYearUp()
+    {
+        if (nActualYear < years.Length - 1)
         {
-            if (nActualYear < years.Length - 1)
-            {
 
 
-                nActualYear++;
-                dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
-                freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
-                    freshWater.transform.localScale.y, freshWater.transform.localScale.z);
+            nActualYear++;
+            dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
+            freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
+                freshWater.transform.localScale.y, freshWater.transform.localScale.z);
 
-                print(years[nActualYear]);
+            print(years[nActualYear]);
 
-                CreateSalinityDivisions(nActualYear);
+            CreateSalinityDivisions(nActualYear);
 
-                if (areSalinityPointsVisible)
-                {
-                    HideSalinityDivisions(false);
-          
-
-                }
-                else
-                {
-                    HideSalinityDivisions(true);
-                  
-                }
-
-       
-                StartCoroutine(WaitRespawn());
-
-
-
-            }
-            
-        }
-
-        //Hide or show freshwater
-        if (Input.GetKeyDown(KeyCode.N) || clickGrip.GetLastStateDown(handtype))
-        {
             if (areSalinityPointsVisible)
             {
-                HideSalinityDivisions(true);
-                areSalinityPointsVisible = false;
+                HideSalinityDivisions(false);
+
 
             }
             else
             {
-                HideSalinityDivisions(false);
-                areSalinityPointsVisible = true;
+                HideSalinityDivisions(true);
+
             }
+
+            StartCoroutine(WaitRespawn());
+
+        }
+    }
+
+    public void MoveYearDown()
+    {
+        if (nActualYear > 0)
+        {
+
+            nActualYear--;
+            dataTimeText.text = "Year: " + (years[nActualYear]).ToString();
+            freshWater.transform.localScale = new Vector3(xInitialProportion * freshWaterProportions[nActualYear],
+                freshWater.transform.localScale.y, freshWater.transform.localScale.z);
+
+            print(years[nActualYear]);
+
+            CreateSalinityDivisions(nActualYear);
+
+            if (areSalinityPointsVisible)
+            {
+                HideSalinityDivisions(false);
+
+            }
+            else
+            {
+                HideSalinityDivisions(true);
+
+            }
+
+            StartCoroutine(WaitRespawn());
+
+        }
+    }
+
+    public void ShowHideSalinity()
+    {
+        if (areSalinityPointsVisible)
+        {
+            HideSalinityDivisions(true);
+            areSalinityPointsVisible = false;
+
+        }
+        else
+        {
+            HideSalinityDivisions(false);
+            areSalinityPointsVisible = true;
+        }
+    }
+	
+	// Update is called once per frame
+	void Update () {
+
+        //Change the salinity with years - for VR
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            MoveYearDown();
+        }
+
+        //Change the salinity with years for Flat Screens
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            MoveYearUp();
+        }
+
+        //Hide or show freshwater
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            ShowHideSalinity();
         }
 
 
